@@ -34,6 +34,8 @@ For example, the NUCLEO F767ZI board has the target `NUCLEO_F767ZI`.
 
 ## Troubleshooting
 
+### Serialization Error in TF
+
 If the tensorflow stuff gives you an error with serialization:
 
 ```
@@ -48,3 +50,39 @@ pip install protobuf
 ```
 
 and this fixed the issue for me.
+
+### Mac issues with const struct timeval
+
+Sometimes you may get this compiler error:
+
+```
+mbed_rtc_time.cpp@111,7: invalid use of incomplete type 'struct timeval'
+```
+
+Try installing the toolchain available [here](https://github.com/ARMmbed/mbed-cli-osx-installer/releases/tag/v0.0.10), I think it's an issue with the default compiler installed through brew.
+
+Then, make sure that the cross compiler version is OK.
+I think version 6 works the best, rather than version 7.
+
+```bash
+brew tap ArmMbed/homebrew-formulae
+brew install arm-none-eabi-gcc 
+```
+
+If this doesn't install version 6, then try using the official website and downloading the version 6 binary [here](https://developer.arm.com/tools-and-software/open-source-software/developer-tools/gnu-toolchain/gnu-rm/downloads).
+
+### Compilation Issues with RELU mismatched templates
+
+If you have an old version of `utensor_cgen` you might get the following error:
+
+```
+error: wrong number of template arguments (3, should be 2)
+     ctx.push(new ReluOp<uint8_t, float, uint8_t>(),
+```
+
+Just update the version of `utensor_cgen`. I went to version 0.3.5.
+
+### Sub not supported operation in uTensor
+
+Make sure you don't use Subtract in Tensorflow when training, and only use Add.
+If you use default layers, you might have to implement them from scratch or use a different version of Tensorflow.
