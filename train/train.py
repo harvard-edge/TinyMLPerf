@@ -7,7 +7,7 @@ import numpy as np
 import tensorflow as tf
 
 import torch
-from model import build_graph
+from model import build_graph, build_graph_2
 from torch import nn
 from torchvision import transforms
 from torchvision.datasets import cifar
@@ -18,10 +18,34 @@ def one_hot(labels, n_class=10):
     return np.eye(n_class)[labels]
 
 
+def return_dataloader(batch_size):
+    """Returns pytorch dataloaders for train and test. We expect the dataloader
+    to contain numpy arrays corresponding to images, along with categorical
+    labels. Returns the train, eval dataloaders as a tuple."""
+    cifar10_train = cifar.CIFAR10("./cifar10_data", download=True, train=True)
+    cifar10_test = cifar.CIFAR10("./cifar10_data", download=True, train=False)
+
+    cifar10_train_image = [np.array(x[0]) for x in cifar10_train]
+    cifar10_train_label = [x[1] for x in cifar10_train]
+    cifar10_test_image = [np.array(x[0]) for x in cifar10_test]
+    cifar10_test_label = [x[1] for x in cifar10_test]
+
+    train_loader = torch.utils.data.DataLoader(
+        list(zip(cifar10_train_image, cifar10_train_label)),
+        batch_size=batch_size, shuffle=True, num_workers=2
+    )
+    eval_loader = torch.utils.data.DataLoader(
+        list(zip(cifar10_test_image, cifar10_test_label)),
+        batch_size=1, shuffle=False, num_workers=2
+    )
+    return train_loader, eval_loader
+
+
 @click.command()
 @click.help_option("-h", "--help")
 @click.option(
-    "--batch-size", default=50, show_default=True, help="the image batch size", type=int
+    "--batch-size", default=50, show_default=True, 
+    help="the image batch size", type=int
 )
 @click.option(
     "--lr",
@@ -31,7 +55,8 @@ def one_hot(labels, n_class=10):
     type=float,
 )
 @click.option(
-    "--epochs", default=1, show_default=True, help="the number of epochs", type=int
+    "--epochs", default=10, show_default=True, 
+    help="the number of epochs", type=int
 )
 @click.option(
     "--keep-prob",
@@ -42,17 +67,23 @@ def one_hot(labels, n_class=10):
 )
 @click.option(
     "--chkp-dir",
-    default="chkp/cifar_cnn",
+    default="chkp/checkpoints",
     show_default=True,
     help="directory where to save check point files",
 )
 @click.option(
     "--output-pb",
     help="output model file name",
-    default="cifar10_cnn.pb",
+    default="output.pb",
     show_default=True,
 )
-def train(batch_size, lr, epochs, keep_prob, chkp_dir, output_pb):
+@click.option(
+    "--graph",
+    help="Choice of neural network to use",
+    show_default=True,
+    default=1,
+)
+def train(batch_size, lr, epochs, keep_prob, chkp_dir, output_pb, graph):
     click.echo(
         click.style(
             "lr: {}, keep_prob: {}, output pbfile: {}".format(lr, keep_prob, output_pb),
@@ -60,52 +91,34 @@ def train(batch_size, lr, epochs, keep_prob, chkp_dir, output_pb):
             bold=True,
         )
     )
-    cifar10_train = cifar.CIFAR10("./cifar10_data", download=True, train=True)
-    cifar10_test = cifar.CIFAR10("./cifar10_data", download=True, train=False)
-    mean = (
-        (cifar10_train.train_data.astype("float32") / 255.0)
-        .mean(axis=(0, 1, 2))
-        .tolist()
-    )
-    std = (
-        (cifar10_train.train_data.astype("float32") / 255.0)
-        .std(axis=(1, 2))
-        .mean(axis=0)
-        .tolist()
-    )
-    cifar10_train.transform = transforms.Compose(
-        [
-            transforms.RandomHorizontalFlip(),
-            transforms.RandomAffine(degrees=0, translate=(0.1, 0.1)),
-            transforms.ToTensor(),
-            transforms.Normalize(mean, std),
-        ]
-    )
-    cifar10_test.transform = transforms.Compose(
-        [transforms.ToTensor(), transforms.Normalize(mean, std)]
-    )
-    train_loader = torch.utils.data.DataLoader(
-        cifar10_train, batch_size=batch_size, shuffle=True, num_workers=2
-    )
-    eval_loader = torch.utils.data.DataLoader(
-        cifar10_test, batch_size=len(cifar10_test), shuffle=False, num_workers=2
-    )
+
+    train_loader, eval_loader = return_dataloader(batch_size)
+
     graph = tf.Graph()
+    graph_builder_map = {
+        1: build_graph,
+        2: build_graph_2,
+    }
+    graph_builder = graph_builder_map[graph]
+
     with graph.as_default():
         tf_image_batch = tf.placeholder(tf.float32, shape=[None, 32, 32, 3])
         tf_labels = tf.placeholder(tf.float32, shape=[None, 10])
         tf_keep_prob = tf.placeholder(tf.float32, name="keep_prob")
-        tf_pred, train_op, tf_total_loss, saver = build_graph(
+        tf_pred, train_op, tf_total_loss, saver = graph_builder(
             tf_image_batch, tf_labels, tf_keep_prob, lr=lr
         )
+    
     best_acc = 0.0
     chkp_cnt = 0
+
     with tf.Session(graph=graph) as sess:
         tf.global_variables_initializer().run()
         for epoch in range(1, epochs + 1):
-            for i, (img_batch, label_batch) in enumerate(train_loader, 1):
-                np_img_batch = img_batch.numpy().transpose((0, 2, 3, 1))
-                np_label_batch = label_batch.numpy()
+            for i, training_batch in enumerate(train_loader, 1):
+                img_batch, label_batch = training_batch
+                np_img_batch = img_batch.numpy()
+                np_label_batch = np.array(label_batch)
                 _ = sess.run(
                     train_op,
                     feed_dict={
@@ -114,15 +127,20 @@ def train(batch_size, lr, epochs, keep_prob, chkp_dir, output_pb):
                         tf_keep_prob: keep_prob,
                     },
                 )
+
                 if (i % 100) == 0:
-                    img_batch, label_batch = next(iter(eval_loader))
-                    np_img_batch = img_batch.numpy().transpose((0, 2, 3, 1))
-                    np_label_batch = label_batch.numpy()
-                    pred_label = sess.run(
-                        tf_pred,
-                        feed_dict={tf_image_batch: np_img_batch, tf_keep_prob: 1.0},
-                    )
-                    acc = (pred_label == np_label_batch).sum() / np_label_batch.shape[0]
+                    correct, total = 0, 0
+                    for img_batch, label_batch in eval_loader:
+                        np_img_batch = img_batch.numpy()
+                        np_label_batch = label_batch.numpy()
+                        pred_label = sess.run(
+                            tf_pred,
+                            feed_dict={tf_image_batch: np_img_batch, tf_keep_prob: 1.0},
+                        )
+                        correct += (pred_label == np_label_batch).sum()
+                        total += np_label_batch.shape[0]
+                        acc = correct / float(total)
+                    
                     click.echo(
                         click.style(
                             "[epoch {}: {}], accuracy {:0.2f}%".format(
@@ -132,6 +150,7 @@ def train(batch_size, lr, epochs, keep_prob, chkp_dir, output_pb):
                             bold=True,
                         )
                     )
+
                     if acc >= best_acc:
                         best_acc = acc
                         chkp_cnt += 1
@@ -145,6 +164,8 @@ def train(batch_size, lr, epochs, keep_prob, chkp_dir, output_pb):
                             )
                         )
                         best_chkp = saver.save(sess, chkp_dir, global_step=chkp_cnt)
+
+
     best_graph_def = prepare_meta_graph(
         "{}.meta".format(best_chkp), output_nodes=[tf_pred.op.name]
     )
