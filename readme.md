@@ -71,6 +71,8 @@ brew install arm-none-eabi-gcc
 
 If this doesn't install version 6, then try using the official website and downloading the version 6 binary [here](https://developer.arm.com/tools-and-software/open-source-software/developer-tools/gnu-toolchain/gnu-rm/downloads).
 
+__Then, make sure that in your `develop.json` or `release.json` that you compile C++ using gnu++11 rather than c++11. This is probably the root cause of the issue, the GNU extensions aren't on by default.__
+
 ### Compilation Issues with RELU mismatched templates
 
 If you have an old version of `utensor_cgen` you might get the following error:
