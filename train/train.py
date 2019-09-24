@@ -7,7 +7,7 @@ import numpy as np
 import tensorflow as tf
 
 import torch
-from model import build_graph, build_graph_2
+from model import build_graph, build_graph_2, build_fc_1
 from torch import nn
 from torchvision import transforms
 from torchvision.datasets import cifar
@@ -22,8 +22,8 @@ def return_dataloader(batch_size):
     """Returns pytorch dataloaders for train and test. We expect the dataloader
     to contain numpy arrays corresponding to images, along with categorical
     labels. Returns the train, eval dataloaders as a tuple."""
-    cifar10_train = cifar.CIFAR10("./cifar10_data", download=True, train=True)
-    cifar10_test = cifar.CIFAR10("./cifar10_data", download=True, train=False)
+    cifar10_train = cifar.CIFAR10("~/.cifar10_data", download=True, train=True)
+    cifar10_test = cifar.CIFAR10("~/.cifar10_data", download=True, train=False)
 
     cifar10_train_image = [np.array(x[0]) for x in cifar10_train]
     cifar10_train_label = [x[1] for x in cifar10_train]
@@ -81,7 +81,7 @@ def return_dataloader(batch_size):
     "--graph",
     help="Choice of neural network to use",
     show_default=True,
-    default=1,
+    default='1',
 )
 def train(batch_size, lr, epochs, keep_prob, chkp_dir, output_pb, graph):
     click.echo(
@@ -91,15 +91,17 @@ def train(batch_size, lr, epochs, keep_prob, chkp_dir, output_pb, graph):
             bold=True,
         )
     )
+    graph_object = graph  # will be overwritten by TF graph later
 
     train_loader, eval_loader = return_dataloader(batch_size)
 
     graph = tf.Graph()
     graph_builder_map = {
-        1: build_graph,
-        2: build_graph_2,
+        'fc1': build_fc_1,
+        '1': build_graph,
+        '2': build_graph_2,
     }
-    graph_builder = graph_builder_map[graph]
+    graph_builder = graph_builder_map[graph_object]
 
     with graph.as_default():
         tf_image_batch = tf.placeholder(tf.float32, shape=[None, 32, 32, 3])

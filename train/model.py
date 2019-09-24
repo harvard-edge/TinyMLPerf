@@ -82,7 +82,6 @@ def cross_entropy_loss(logits, labels, name=None, axis=-1):
     return loss
 
 
-
 def build_graph_2(tf_image_batch, tf_labels, tf_keep_prob, lr=1.0):
     """
     tf_image_batch: None x 32 x 32 x 3
@@ -155,6 +154,32 @@ def build_graph(tf_image_batch, tf_labels, tf_keep_prob, lr=1.0):
             conv6, shape=[-1, reduce(lambda x, y: x * y, conv6.shape.as_list()[1:], 1)]
         )
         fc1 = fc_layer(flat_conv6, 128, act_fun=tf.nn.relu)
+        drop_2 = tf.nn.dropout(fc1, keep_prob=tf_keep_prob)
+        fc2 = fc_layer(drop_2, 64, act_fun=tf.nn.relu)
+        logits = fc_layer(fc2, 10)
+        tf_pred = tf.argmax(logits, axis=-1, name="pred")
+        total_loss = cross_entropy_loss(logits=logits, labels=tf_labels)
+
+        train_op = tf.train.AdadeltaOptimizer(learning_rate=lr, epsilon=1e-7).minimize(
+            total_loss
+        )
+        saver = tf.train.Saver(max_to_keep=5)
+
+        return tf_pred, train_op, total_loss, saver
+
+
+def build_fc_1(tf_image_batch, tf_labels, tf_keep_prob, lr=1.0):
+    """
+    tf_image_batch: None x 32 x 32 x 3
+    tf_labels: None x 10
+    tf_keep_prob: None
+    """
+    graph = tf_image_batch.graph
+
+    with graph.as_default():
+        flatten1 = tf.reshape(tf_image_batch,
+            shape=[-1, reduce(lambda x, y: x * y, tf_image_batch.shape.as_list()[1:], 1)])
+        fc1 = fc_layer(flatten1, 128, act_fun=tf.nn.relu)
         drop_2 = tf.nn.dropout(fc1, keep_prob=tf_keep_prob)
         fc2 = fc_layer(drop_2, 64, act_fun=tf.nn.relu)
         logits = fc_layer(fc2, 10)
