@@ -168,7 +168,8 @@ def build_graph(tf_image_batch, tf_labels, tf_keep_prob, lr=1.0):
         return tf_pred, train_op, total_loss, saver
 
 
-def build_fc_1(tf_image_batch, tf_labels, tf_keep_prob, lr=1.0):
+def build_template_twolayer_fc(tf_image_batch, tf_labels, tf_keep_prob,
+    first_layer_dim, second_layer_dim, lr=1.0):
     """
     tf_image_batch: None x 32 x 32 x 3
     tf_labels: None x 10
@@ -179,9 +180,9 @@ def build_fc_1(tf_image_batch, tf_labels, tf_keep_prob, lr=1.0):
     with graph.as_default():
         flatten1 = tf.reshape(tf_image_batch,
             shape=[-1, reduce(lambda x, y: x * y, tf_image_batch.shape.as_list()[1:], 1)])
-        fc1 = fc_layer(flatten1, 128, act_fun=tf.nn.relu)
+        fc1 = fc_layer(flatten1, first_layer_dim, act_fun=tf.nn.relu)
         drop_2 = tf.nn.dropout(fc1, keep_prob=tf_keep_prob)
-        fc2 = fc_layer(drop_2, 64, act_fun=tf.nn.relu)
+        fc2 = fc_layer(drop_2, second_layer_dim, act_fun=tf.nn.relu)
         logits = fc_layer(fc2, 10)
         tf_pred = tf.argmax(logits, axis=-1, name="pred")
         total_loss = cross_entropy_loss(logits=logits, labels=tf_labels)
@@ -192,3 +193,18 @@ def build_fc_1(tf_image_batch, tf_labels, tf_keep_prob, lr=1.0):
         saver = tf.train.Saver(max_to_keep=5)
 
         return tf_pred, train_op, total_loss, saver
+
+
+def build_fc_1(tf_image_batch, tf_labels, tf_keep_prob, lr=1.0):
+    return build_template_twolayer_fc(tf_image_batch, tf_labels, tf_keep_prob,
+        128, 64, lr=lr)
+
+
+def build_fc_2(tf_image_batch, tf_labels, tf_keep_prob, lr=1.0):
+    return build_template_twolayer_fc(tf_image_batch, tf_labels, tf_keep_prob,
+        256, 128, lr=lr)
+
+
+def build_fc_3(tf_image_batch, tf_labels, tf_keep_prob, lr=1.0):
+    return build_template_twolayer_fc(tf_image_batch, tf_labels, tf_keep_prob,
+        512, 128, lr=lr)

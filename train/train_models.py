@@ -7,7 +7,7 @@ def main():
     model_dir = Path.cwd() / 'models'
     model_dir.mkdir(exist_ok=True, parents=True)
     
-    for network in ['fc1', '1', '2']:
+    for network in ['fc1', 'fc2', 'fc3', '1', '2']:
         output_folder = model_dir / network
         output_folder.mkdir(exist_ok=True, parents=True)
         output_path = output_folder / 'model.pb'
