@@ -1,4 +1,4 @@
-#include "cifar10_cnn.hpp"
+#include "model.hpp"
 #include "uTensor/util/uTensor_util.hpp"
 #include <stdio.h>
 
@@ -34,10 +34,13 @@ int main(int argc, char *argv[]) {
 
 	Context ctx;
 	float data[32 * 32 * 3];
+	for (int i = 0; i < 32 * 32 * 3; i++) {
+		data[i] = 0.1;
+	}
 	Tensor *input_tensor = new WrappedRamTensor<float>({1, 32, 32, 3}, data);
-	get_cifar10_cnn_ctx(ctx, input_tensor);
+	get_model_ctx(ctx, input_tensor);
 
-	// S_TENSOR logits = ctx.get("fully_connect_2/logits:0");
+	S_TENSOR logits = ctx.get("pred:0");
 	ctx.eval();
 
 	uint32_t end_time = us_ticker_read();
