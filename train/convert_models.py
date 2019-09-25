@@ -7,6 +7,8 @@ from pathlib import Path
 import time
 
 
+OUTPUT_NODE = 'y_pred'
+
 def main():
     model_path = Path.cwd() / 'models'
     folders = list(model_path.glob("*"))
@@ -16,9 +18,10 @@ def main():
             continue
         
         model_name = models[0]
-        run(['utensor-cli', 'convert',
-            str(model_name), '--output-nodes', 'pred', 
-            '--model-dir', folder])
+        run(['utensor-cli', 
+             'convert', str(model_name),
+             '--output-nodes', OUTPUT_NODE, 
+             '--model-dir', folder])
 
 
 if __name__ == '__main__':

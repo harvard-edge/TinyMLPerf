@@ -89,7 +89,7 @@ def build_graph_2(tf_image_batch, tf_labels, tf_keep_prob, lr=1.0):
     tf_keep_prob: None
     """
     graph = tf_image_batch.graph
-
+    tf_image_batch = tf.reshape(tf_image_batch, shape=[-1, 32, 32, 3])
     with graph.as_default():
         conv1 = conv_layer(tf_image_batch, [2, 2, 3, 16], padding="VALID")
         conv2 = conv_layer(conv1, [3, 3, 16, 16], padding="VALID", act_fun=tf.nn.relu)
@@ -133,7 +133,7 @@ def build_graph(tf_image_batch, tf_labels, tf_keep_prob, lr=1.0):
     tf_keep_prob: None
     """
     graph = tf_image_batch.graph
-
+    tf_image_batch = tf.reshape(tf_image_batch, shape=[-1, 32, 32, 3])
     with graph.as_default():
         conv1 = conv_layer(tf_image_batch, [2, 2, 3, 16], padding="VALID")
         conv2 = conv_layer(conv1, [3, 3, 16, 32], padding="VALID", act_fun=tf.nn.relu)
@@ -176,7 +176,7 @@ def build_template_twolayer_fc(tf_image_batch, tf_labels, tf_keep_prob,
     tf_keep_prob: None
     """
     graph = tf_image_batch.graph
-
+    tf_image_batch = tf.reshape(tf_image_batch, shape=[-1, 32, 32, 3])
     with graph.as_default():
         flatten1 = tf.reshape(tf_image_batch,
             shape=[-1, reduce(lambda x, y: x * y, tf_image_batch.shape.as_list()[1:], 1)])
@@ -197,14 +197,14 @@ def build_template_twolayer_fc(tf_image_batch, tf_labels, tf_keep_prob,
 
 def build_fc_1(tf_image_batch, tf_labels, tf_keep_prob, lr=1.0):
     return build_template_twolayer_fc(tf_image_batch, tf_labels, tf_keep_prob,
-        128, 64, lr=lr)
+        64, 32, lr=lr)
 
 
 def build_fc_2(tf_image_batch, tf_labels, tf_keep_prob, lr=1.0):
     return build_template_twolayer_fc(tf_image_batch, tf_labels, tf_keep_prob,
-        256, 128, lr=lr)
+        128, 64, lr=lr)
 
 
 def build_fc_3(tf_image_batch, tf_labels, tf_keep_prob, lr=1.0):
     return build_template_twolayer_fc(tf_image_batch, tf_labels, tf_keep_prob,
-        512, 128, lr=lr)
+        256, 128, lr=lr)
