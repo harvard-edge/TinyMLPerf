@@ -23,18 +23,29 @@ def main():
         models = list(folder.glob('*.bin'))
         if not models:
             print("No binary detected here.")
+            continue
         
         model = models[0]
         print(f"Going to work on {model}")
         # Copy the model over, and wait for some time for the utility
         # to flash the model over to the board.
-        time.sleep(5.0)
+        time.sleep(10.0)
         shutil.copy(model, VOLUMES_MNT)
-        time.sleep(30.0)
-        print("Going to query mbed for the inference time")
-        process = Popen(['python3', 'get_inf_time.py'], stdout=PIPE)
-        out, _ = process.communicate()
-        out = eval(out.decode('utf-8'))
+        time.sleep(40.0)
+        
+        out = None
+        num_tries = 0
+        while out is None and num_tries < 4:
+            print("Going to query mbed for the inference time, try {}".format(num_tries))
+            process = Popen(['python3', 'get_inf_time.py'], stdout=PIPE)
+            out, _ = process.communicate()
+            out = eval(out.decode('utf-8'))
+            logfile = Path.cwd() / 'log.log'
+            print(out)
+            num_tries += 1
+
+        with logfile.open('a') as f:
+            f.write("{},{}\n".format(str(model), out))
         model_inftime_map[model] = out
 
     print(model_inftime_map)
