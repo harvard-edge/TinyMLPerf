@@ -1,4 +1,5 @@
 import sys
+import itertools
 import inspect
 import importlib
 import glob
@@ -51,8 +52,14 @@ def load_tiers_and_tasks():
                 print("Loaded %s/%s" % (d, task_name))
     return task_names, tiers_tasks_dict
 
+def materialize_argument_ranges(raw_arg_list):
+    argwords = raw_arg_list[0:len(raw_arg_list):2]
+    ranges = raw_arg_list[1:len(raw_arg_list):2]
+    ranges_materialized = [list(eval(x)) for x in ranges]
+    return argwords, ranges_materialized
+
 if __name__ == "__main__":
-    args = parser.parse_args()
+    args, unknown_args = parser.parse_known_args()
     assert(args.tier != None)
     assert(args.task != None)
     assert(args.output_path != None)
@@ -64,5 +71,12 @@ if __name__ == "__main__":
     # Run
     task_names, tiers_tasks_dict = load_tiers_and_tasks()
     assert(args.task in task_names)
-    task = tiers_tasks_dict[args.tier][args.task]()
-    task.generate_task(args.output_path)
+    
+    # Cross product over task argument ranges
+    task_argwords, task_values = materialize_argument_ranges(unknown_args)
+    for paramset in itertools.product(*task_values):
+        assert(len(task_argwords) == len(paramset))
+        arg_list = [str(val) for pair in zip(task_argwords, paramset) for val in pair]
+        task = tiers_tasks_dict[args.tier][args.task]()
+        task_args = task.get_parser().parse_args(arg_list)
+        task.generate_task(args.output_path, task_args)

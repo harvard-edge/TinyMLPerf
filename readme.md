@@ -1,7 +1,10 @@
 # Run steps
 
+Run from base directory.
+
 source scripts/setup_paths.sh
-python3 benchmarks/src/generate.py --tier L1 --task example_task --output_path tmp
+- python3 benchmarks/src/generate.py --tier L1 --task example_task --output_path tmp
+- python3 benchmarks/src/generate.py --tier L1 --task ExampleTask --output_path tmp --param1 "range(1,10)" --param2 "range(1, 10)"
 
 # Installation Steps
 
