@@ -12,9 +12,11 @@ parser = argparse.ArgumentParser()
 filter_modules = ["__init__"]
 tier_directories = ['L1','L2','L3']
 
-parser.add_argument('--tier', default=None, choices=tier_directories)
-parser.add_argument('--task', default=None, type=str)
-parser.add_argument('--output_path', default=None, type=str)
+parser.add_argument('--tier', default=None, choices=tier_directories,
+                    help='Subfolder to run', required=True)
+parser.add_argument('--task', default=None, type=str, required=True,
+                    help="Name of the task to run.")
+parser.add_argument('--output-path', dest='output_path', default=None, type=str)
 
 def load_tiers_and_tasks():
     # Load all the tasks from L1/L2/L3 directories
