@@ -1,3 +1,8 @@
+# Run steps
+
+source scripts/setup_paths.sh
+python3 benchmarks/src/generate.py --tier L1 --task example_task --output_path tmp
+
 # Installation Steps
 
 Make a new mbed program for your MCU.

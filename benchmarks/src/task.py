@@ -1,13 +1,12 @@
 import sys
-from task import Task
 
-class ExampleTask(Task):
+class Task(object):
+    
     def __init__(self):
         pass
 
     def generate_task(self, output_path):
-        print("ExampleTask starting...")
+        raise NotImplementedError
 
     def task_name(self):
-        return "ExampleTask"
-
+        raise NotImplementedError
