@@ -105,3 +105,6 @@
 /Users/wfu/vj/tinyml/tinyml/train/models/twolayer_256_48/NUCLEO_F767ZI_prog.bin,368582.0
 /Users/wfu/vj/tinyml/tinyml/train/models/twolayer_64_48/NUCLEO_F767ZI_prog.bin,104192.335938
 /Users/wfu/vj/tinyml/tinyml/train/models/twolayer_32_32/NUCLEO_F767ZI_prog.bin,59808.667969
+/Users/wfu/vj/tinyml/tinyml/train/models/twolayer_64_32/NUCLEO_F767ZI_prog.bin,103577.664062
+/Users/wfu/vj/tinyml/tinyml/train/models/twolayer_384_384/NUCLEO_F767ZI_prog.bin,601578.3125
+/Users/wfu/vj/tinyml/tinyml/train/models/twolayer_384_128/NUCLEO_F767ZI_prog.bin,None

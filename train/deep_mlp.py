@@ -102,13 +102,14 @@ def main(_):
     y_ = tf.placeholder(tf.float32, [None, 10], name="y")
 
     # Build the graph for the deep net
-    neural_network_map = {
-        'fc1': deepnn_fc1,
-        'fc2': deepnn_fc2,
-        'fc3': deepnn_fc3,
-    }
-    neural_network = neural_network_map[FLAGS.models]
-    y_pred, logits = neural_network(x)
+    # neural_network_map = {
+    #     'fc1': deepnn_fc1,
+    #     'fc2': deepnn_fc2,
+    #     'fc3': deepnn_fc3,
+    # }
+    # neural_network = neural_network_map[FLAGS.models]
+    # y_pred, logits = neural_network(x)
+    y_pred, logits = deepnn(x, FLAGS.first_layer, FLAGS.second_layer)
 
     with tf.name_scope("Loss"):
         cross_entropy = tf.nn.softmax_cross_entropy_with_logits_v2(labels=y_,
@@ -127,7 +128,7 @@ def main(_):
         saver = tf.train.Saver()
 
         # SGD
-        for epoch in range(10):
+        for epoch in range(1):
             for batch_images, batch_labels in train_dataloader:
                     batch_images, batch_labels = batch_images.numpy(), batch_labels.numpy()
                     batch_images = batch_images.reshape(batch_images.shape[0], -1)
@@ -196,5 +197,13 @@ if __name__ == '__main__':
     parser.add_argument('-o', '--output', default='model.pb',
                         dest='pb_fname',
                         help='output pb file (default: %(default)s)')
+    parser.add_argument('--first-layer', default=128, type=int,
+                        dest='first_layer',
+                        help='number of weights in first layer')
+    parser.add_argument('--second-layer', default=64, type=int,
+                        dest='second_layer',
+                        help='number of weights in second layer')
+    FLAGS, unparsed = parser.parse_known_args()
+    FLAGS, unparsed = parser.parse_known_args()
     FLAGS, unparsed = parser.parse_known_args()
     tf.app.run(main=main, argv=[sys.argv[0]] + unparsed)
