@@ -3,3 +3,4 @@ test*
 trained_models/
 .vscode/*
 *.pyc
+*~
