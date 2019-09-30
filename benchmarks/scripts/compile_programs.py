@@ -4,14 +4,24 @@ C++ files."""
 from subprocess import run
 import numpy as np
 import time
+import os
 from pathlib import Path
 import shutil
 import util
+import sys
+import argparse
+import glob
 
+parser = argparse.ArgumentParser()
 
-ROOT_MODEL_DIR = Path.cwd() / 'train' / 'models'
-ROOT_MBED_PROGRAM_DIR = Path.cwd() / 'mcu_program'
+parser.add_argument("--mbed-program-dir", default="mbed_prog")
+parser.add_argument("--target", default=None)
+args = parser.parse_args()
 
+ROOT_MBED_PROGRAM_DIR = Path.cwd() / args.mbed_program_dir
+
+if not os.path.exists(ROOT_MBED_PROGRAM_DIR):
+    os.makedirs(ROOT_MBED_PROGRAM_DIR);
 
 def process_model_folder(model_folder):
     """Process model folders. Checks whether or not there is a .cpp, .hpp, and
@@ -35,7 +45,7 @@ def process_model_folder(model_folder):
         shutil.copy(cpp_source_file, ROOT_MBED_PROGRAM_DIR)
     
     # Now call the compilation.
-    run(['sh', 'compile.sh'], cwd=ROOT_MBED_PROGRAM_DIR)
+    run(['sh', 'templates/compile.sh'], cwd=Path.cwd())
     compiled_binary_files = list((ROOT_MBED_PROGRAM_DIR / 'BUILD').glob("*/*/*.bin"))
     if not compiled_binary_files:
         print("Couldn't find the compiled binary")
@@ -48,15 +58,7 @@ def process_model_folder(model_folder):
     
 
 def main():
-    root_dir = ROOT_MODEL_DIR
-    if not root_dir:
-        raise RuntimeError("Model root directory doesn't exist, check path.")
-
-    model_folders = list(root_dir.glob('*'))
-    print(f'Found model folders: {model_folders}')
-    for model_folder in model_folders:
-        process_model_folder(model_folder)
-
+    process_model_folder(Path.cwd() / args.target)
 
 if __name__ == '__main__':
     main()
