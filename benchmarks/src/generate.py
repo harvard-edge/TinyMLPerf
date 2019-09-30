@@ -27,7 +27,7 @@ def load_tiers_and_tasks():
         tiers_tasks_dict[d] = {}
         tier_directory_path = "/".join([self_full_path, d])
         assert(os.path.exists(tier_directory_path))
-        for module_path in glob.glob(tier_directory_path + "/*.py"):
+        for module_path in glob.glob(tier_directory_path + "/*/*.py"):
             module_name = module_path.split("/")[-1].replace(".py", "")
             if module_name in filter_modules:
                 continue
