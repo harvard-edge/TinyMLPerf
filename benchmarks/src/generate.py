@@ -18,9 +18,10 @@ parser.add_argument('--task', default=None, type=str, required=True,
                     help="Name of the task to run.")
 parser.add_argument('--output-path', dest='output_path', default=None, type=str)
 
+self_full_path = os.path.dirname(os.path.abspath(__file__))
+
 def load_tiers_and_tasks():
     # Load all the tasks from L1/L2/L3 directories
-    self_full_path = os.path.dirname(os.path.abspath(__file__))
     tiers_tasks_dict = {}
     task_names = set()
     for d in tier_directories:
@@ -83,4 +84,9 @@ if __name__ == "__main__":
         arg_list = [str(val) for pair in zip(task_argwords, paramset) for val in pair]
         task = tiers_tasks_dict[args.tier][args.task]()
         task_args = task.get_parser().parse_args(arg_list)
-        task.generate_task(args.output_path, task_args)
+        task_output_path = (args.output_path + "/" + args.task + "/" + 
+                            "_".join([arg.replace("-","") + "=" + str(val) for arg, val in 
+                                      zip(task_argwords, paramset)]))
+        if not os.path.exists(task_output_path):
+            os.makedirs(task_output_path)
+        task.generate_task(task_output_path, task_args)
