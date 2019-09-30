@@ -11,6 +11,7 @@ import util
 import sys
 import argparse
 import glob
+import git
 
 parser = argparse.ArgumentParser()
 
@@ -22,6 +23,11 @@ ROOT_MBED_PROGRAM_DIR = Path.cwd() / args.mbed_program_dir
 
 if not os.path.exists(ROOT_MBED_PROGRAM_DIR):
     os.makedirs(ROOT_MBED_PROGRAM_DIR);
+
+def get_git_root(path):
+    git_repo = git.Repo(path, search_parent_directories=True)
+    git_root = git_repo.git.rev_parse("--show-toplevel")
+    return git_root
 
 def process_model_folder(model_folder):
     """Process model folders. Checks whether or not there is a .cpp, .hpp, and
@@ -44,8 +50,8 @@ def process_model_folder(model_folder):
     for cpp_source_file in cpp_files:
         shutil.copy(cpp_source_file, ROOT_MBED_PROGRAM_DIR)
     
-    # Now call the compilation.
-    run(['sh', 'templates/compile.sh'], cwd=Path.cwd())
+    # Now call the compilation.        
+    run(['sh', get_git_root(os.path.dirname(os.path.abspath(__file__))) + '/templates/compile.sh'], cwd=ROOT_MBED_PROGRAM_DIR)
     compiled_binary_files = list((ROOT_MBED_PROGRAM_DIR / 'BUILD').glob("*/*/*.bin"))
     if not compiled_binary_files:
         print("Couldn't find the compiled binary")
