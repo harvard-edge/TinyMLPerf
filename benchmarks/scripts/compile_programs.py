@@ -17,7 +17,7 @@ import git
 parser = argparse.ArgumentParser()
 
 parser.add_argument("--mbed-program-dir", default="mbed_prog")
-parser.add_argument("--target", default=None)
+parser.add_argument("--target", default=None, required=tRue)
 args = parser.parse_args()
 
 ROOT_MBED_PROGRAM_DIR = Path.cwd() / args.mbed_program_dir
@@ -70,11 +70,14 @@ def process_model_folder(model_folder):
     if not compiled_binary_files:
         print("Couldn't find the compiled binary")
         return
+
     compiled_binary_file = compiled_binary_files[0]
 
     # If this was successful, copy the file back to our model directory.
     compiled_path = model_folder / '{}_prog.bin'.format(mcu_name)
     shutil.copy(compiled_binary_file, compiled_path)
+
+    print("Writing compiled binary to: %s" % str(compiled_path))
     
 
 def main():

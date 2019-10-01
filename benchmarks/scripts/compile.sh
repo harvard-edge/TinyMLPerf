@@ -3,4 +3,4 @@ export PATH=$TOOLCHAIN_DIR:$PATH;
 mbed compile \
 -m auto \
 -t GCC_ARM \
---profile release.json
+#--profile release.json
