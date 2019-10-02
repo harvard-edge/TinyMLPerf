@@ -11,7 +11,7 @@
 Serial pc(USBTX, USBRX, 9600);   // baud rate of our MCUs
 #endif
 
-#define NBYTES 10
+#define NBYTES 50000
 
 int dont_optimize = 0;
 

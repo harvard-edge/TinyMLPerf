@@ -25,7 +25,6 @@ def get_mcu():
     except IndexError:
         raise RuntimeError("Couldn't find attached MCU board through mbed cli")
 
-
 def get_inference_time_from_mbed(mbed_sleep=5.0):
     """Gets an inference time from the attached microcontroller. Expects a line
     in the format <line with microseconds in it>: [time as a float]

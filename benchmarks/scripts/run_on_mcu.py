@@ -8,6 +8,7 @@ from subprocess import run
 from subprocess import check_output 
 from subprocess import Popen, PIPE
 from pathlib import Path
+import glob
 from fcntl import fcntl, F_GETFL, F_SETFL
 import time
 import os
@@ -28,8 +29,13 @@ parser.add_argument("--timelimit", default=10, type=int)
 parser.add_argument("--output_path", default="mbed_output")
 args = parser.parse_args()
 
+def get_volume():
+    #x3'/Volumes/NODE_F767ZI'
+    target_volume = [x for x in glob.glob("/Volumes/*") if "NODE_" in x]
+    return target_volume[0]
+
 project_base_dir = get_git_root(os.path.dirname(os.path.abspath(__file__))) 
-VOLUMES_MNT = '/Volumes/NODE_F767ZI'
+VOLUMES_MNT = get_volume()
 MODEL_FOLDER = Path(args.target)
 
 def main():    
