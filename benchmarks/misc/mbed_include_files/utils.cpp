@@ -24,10 +24,9 @@ void print_stats_as_json() {
     mbed_stats_heap_t heap_info;
     mbed_stats_stack_t stack_info[MAX_THREAD_INFO];
 
-    debug("\nThis message is from debug function");
-    debug_if(1,"\nThis message is from debug_if function");
-    debug_if(0,"\nSOMETHING WRONG!!! This message from debug_if function shouldn't show on bash");
-    
+    mbed_stats_heap_get(&heap_info);
+    mbed_stats_stack_get_each(stack_info, MAX_THREAD_INFO);
+
     // Add heap info to map
     map<string, string> data = {
         {"task_name", "\"" + string(task_name) + "\""},
