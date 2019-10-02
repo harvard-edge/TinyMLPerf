@@ -83,7 +83,7 @@ def main():
         print("Writing lines")
         print(lines)
         with open(args.output_path, "w") as f:
-            f.write("".join([str(x) for x in lines]))
+            f.write("".join([x.decode("utf-8") for x in lines]))
 
         # Hack to only eval 1 binary
         break

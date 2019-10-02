@@ -17,7 +17,7 @@ import git
 parser = argparse.ArgumentParser()
 
 parser.add_argument("--mbed-program-dir", default="mbed_prog")
-parser.add_argument("--target", default=None, required=tRue)
+parser.add_argument("--target", default=None, required=True)
 args = parser.parse_args()
 
 ROOT_MBED_PROGRAM_DIR = Path.cwd() / args.mbed_program_dir
