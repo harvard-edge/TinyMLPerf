@@ -3,4 +3,5 @@ export PATH=$TOOLCHAIN_DIR:$PATH;
 mbed compile \
 -m auto \
 -t GCC_ARM \
+-DMBED_ALL_STATS_ENABLED=1
 #--profile release.json

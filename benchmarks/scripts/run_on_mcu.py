@@ -24,7 +24,7 @@ def get_git_root(path):
 parser = argparse.ArgumentParser()
 
 parser.add_argument("--target", default=None, required=True)
-parser.add_argument("--timelimit", default=5)
+parser.add_argument("--timelimit", default=10)
 parser.add_argument("--output_path", default="mbed_output")
 args = parser.parse_args()
 
@@ -61,16 +61,25 @@ def main():
 
         print("Reading lines")
         time.sleep(args.timelimit)
+       
+        out = None
         lines = []
+        t = time.time()
         while True:
             print("Iterating lines...")
-            try:
-                line = os.read(a.stdout.fileno(), 1024)
-                lines.append(line)
-                if len(line) == 0:
+            while True:
+                try:
+                    line = os.read(a.stdout.fileno(), 1024)
+                    lines.append(line)
+                    if len(line) == 0:
+                        break
+                except OSError:
                     break
-            except OSError:
+            print("Got: ", lines)
+            time.sleep(1)
+            if time.time()-t >= args.timelimit:
                 break
+        
         time.sleep(0.5)
         a.kill()
         time.sleep(0.5)
