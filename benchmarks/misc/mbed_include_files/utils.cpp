@@ -3,15 +3,15 @@
 using namespace std;
 
 double time_elapsed = -1;
-clock_t begin, end;
+clock_t begin_time, end_time;
 
 void tick() {
-    begin = clock();
+    begin_time = clock();
 }
 
 void tock() {
-    end = clock();
-    time_elapsed = double(end - begin) / CLOCKS_PER_SEC;
+    end_time = clock();
+    time_elapsed = (double)(end_time - begin_time) / CLOCKS_PER_SEC;
 }
 
 void print_stats_as_json() {

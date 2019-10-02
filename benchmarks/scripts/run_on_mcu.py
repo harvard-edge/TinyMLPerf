@@ -24,7 +24,7 @@ def get_git_root(path):
 parser = argparse.ArgumentParser()
 
 parser.add_argument("--target", default=None, required=True)
-parser.add_argument("--timelimit", default=10)
+parser.add_argument("--timelimit", default=10, type=int)
 parser.add_argument("--output_path", default="mbed_output")
 args = parser.parse_args()
 
@@ -86,6 +86,7 @@ def main():
         a.kill()
         
         print("Writing lines")
+        lines = [x for x in lines if x.decode("utf-8").strip() != ""]
         print(lines)
         with open(args.output_path, "w") as f:
             f.write("".join([x.decode("utf-8") for x in lines]))
