@@ -24,7 +24,7 @@ def get_git_root(path):
 parser = argparse.ArgumentParser()
 
 parser.add_argument("--target", default=None, required=True)
-parser.add_argument("--timelimit", default=60)
+parser.add_argument("--timelimit", default=5)
 parser.add_argument("--output_path", default="mbed_output")
 args = parser.parse_args()
 
@@ -52,34 +52,30 @@ def main():
         
         # Run the binary
         print("Running binary")
-        p = subprocess.Popen(['mbed sterm -r'],   
+        a = subprocess.Popen(['mbed sterm -r'],
                              stdout=subprocess.PIPE,
                              shell=True)
-        
-        def enqueue_output(out, queue):
-            for line in iter(out.readline, b''):
-                print("Got:", line)
-                queue.put(str(line))
-            out.close()
 
-        q = Queue()
-        t = Thread(target=enqueue_output, args=(p.stdout, q))
-        t.daemon = True # thread dies with the program
-        t.start()
-        
-        lines = []
+        flags = fcntl(a.stdout, F_GETFL) # get current p.stdout flags
+        fcntl(a.stdout, F_SETFL, flags | O_NONBLOCK)
+
         print("Reading lines")
-        t_start = time.time()
+        time.sleep(args.timelimit)
+        lines = []
         while True:
-            if time.time() - t_start >= args.timelimit:
+            print("Iterating lines...")
+            try:
+                line = os.read(a.stdout.fileno(), 1024)
+                lines.append(line)
+                if len(line) == 0:
+                    break
+            except OSError:
                 break
-            try:  
-                line = q.get(timeout=.1) # or q.get(timeout=.1)
-                lines.append(str(line))
-                print("Appending line: ", line)
-            except:
-                continue
-
+        time.sleep(0.5)
+        a.kill()
+        time.sleep(0.5)
+        a.kill()
+        
         print("Writing lines")
         print(lines)
         with open(args.output_path, "w") as f:
