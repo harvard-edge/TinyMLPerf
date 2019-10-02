@@ -15,6 +15,7 @@
 
 #define MAX_THREAD_INFO 10
 
+void register_task(const char *name);
 void tick();
 void tock();
 void print_stats_as_json();

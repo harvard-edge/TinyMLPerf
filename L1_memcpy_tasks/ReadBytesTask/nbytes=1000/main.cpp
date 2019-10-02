@@ -14,6 +14,7 @@ Serial pc(USBTX, USBRX, 9600);   // baud rate of our MCUs
 #define NBYTES 1000
 
 int main(int argc, char *argv[]) {
+    register_task("ReadBytesTask");
     printf("Read bytes task nbytes = %d\n", NBYTES);
     char* arr1 = (char *)malloc(NBYTES);
     char* arr2 = (char *)malloc(NBYTES);

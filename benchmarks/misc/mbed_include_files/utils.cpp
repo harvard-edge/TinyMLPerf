@@ -4,6 +4,7 @@ using namespace std;
 
 double time_elapsed = -1;
 clock_t begin_time, end_time;
+const char *task_name = "NULL";
 
 void tick() {
     begin_time = clock();
@@ -14,6 +15,10 @@ void tock() {
     time_elapsed = (double)(end_time - begin_time) / CLOCKS_PER_SEC;
 }
 
+void register_task(const char *name) {
+    task_name = name;
+}
+
 void print_stats_as_json() {
 
     mbed_stats_heap_t heap_info;
@@ -22,34 +27,38 @@ void print_stats_as_json() {
     debug("\nThis message is from debug function");
     debug_if(1,"\nThis message is from debug_if function");
     debug_if(0,"\nSOMETHING WRONG!!! This message from debug_if function shouldn't show on bash");
-
+    
     // Add heap info to map
-    map<string, float> data = {
-        {"time_elapsed", time_elapsed},
-        {"heap_info.current_size", heap_info.current_size},
-        {"heap_info.max_size", heap_info.max_size},
-        {"heap_info.total_size", heap_info.total_size},
-        {"heap_info.reserved_size", heap_info.reserved_size},
-        {"heap_info.alloc_cnt", heap_info.alloc_cnt},
-        {"heap_info.alloc_fail_cnt", heap_info.alloc_fail_cnt}
+    map<string, string> data = {
+        {"task_name", string(task_name)},
+        {"time_elapsed", to_string(time_elapsed)},
+        {"heap_info.current_size", to_string(heap_info.current_size)},
+        {"heap_info.max_size", to_string(heap_info.max_size)},
+        {"heap_info.total_size", to_string(heap_info.total_size)},
+        {"heap_info.reserved_size", to_string(heap_info.reserved_size)},
+        {"heap_info.alloc_cnt", to_string(heap_info.alloc_cnt)},
+        {"heap_info.alloc_fail_cnt", to_string(heap_info.alloc_fail_cnt)}
     };
 
     // Add per-thread stack info
     for (int i = 0 ; i < MAX_THREAD_INFO; i++) {
         if (stack_info[i].thread_id != 0) {
             string stack_id = "stack_info[" + to_string(i) + "]";
-            data[stack_id + ".thread_id"] = stack_info[i].thread_id;
-            data[stack_id + ".max_size"] = stack_info[i].max_size;
-            data[stack_id + ".reserved_size"] = stack_info[i].reserved_size;
-            data[stack_id + ".stack_cnt"] = stack_info[i].stack_cnt;
+            data[stack_id + ".thread_id"] = to_string(stack_info[i].thread_id);
+            data[stack_id + ".max_size"] = to_string(stack_info[i].max_size);
+            data[stack_id + ".reserved_size"] = to_string(stack_info[i].reserved_size);
+            data[stack_id + ".stack_cnt"] = to_string(stack_info[i].stack_cnt);
         }
     }
     
     // Output as json
-    map<string, float>::iterator it;
+    map<string, string>::iterator it;
     cout << endl << "{";
+    int first = 1;        
     for (it = data.begin(); it != data.end(); it++) {
-        cout << "\"" << it->first << "\"" << " : " << it->second << ", ";
+        if (!first) cout << ", ";
+        first = 0;
+        cout << "\"" << it->first << "\"" << " : " << it->second;
     }
     cout << "}" << endl;
 }
