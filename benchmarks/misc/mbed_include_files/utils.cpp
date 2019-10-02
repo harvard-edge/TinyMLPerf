@@ -30,7 +30,7 @@ void print_stats_as_json() {
     
     // Add heap info to map
     map<string, string> data = {
-        {"task_name", string(task_name)},
+        {"task_name", "\"" + string(task_name) + "\""},
         {"time_elapsed", to_string(time_elapsed)},
         {"heap_info.current_size", to_string(heap_info.current_size)},
         {"heap_info.max_size", to_string(heap_info.max_size)},
