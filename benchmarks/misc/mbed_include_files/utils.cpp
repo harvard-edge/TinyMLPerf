@@ -2,17 +2,17 @@
 
 using namespace std;
 
-double time_elapsed = -1;
-clock_t begin_time, end_time;
 const char *task_name = "NULL";
+float time_elapsed;
+Timer t;
 
 void tick() {
-    begin_time = clock();
+    t.start();
 }
 
 void tock() {
-    end_time = clock();
-    time_elapsed = (double)(end_time - begin_time) / CLOCKS_PER_SEC;
+    t.stop();
+    time_elapsed = t.read();
 }
 
 void register_task(const char *name) {
