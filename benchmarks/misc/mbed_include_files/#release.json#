@@ -5,6 +5,8 @@
                    "-fmessage-length=0", "-fno-exceptions", "-fno-builtin",
                    "-ffunction-sections", "-fdata-sections", "-funsigned-char",
                    "-MMD", "-fno-delete-null-pointer-checks",
-                   "-fomit-frame-pointer", "-DNDEBUG"]
+                   "-fomit-frame-pointer", "-Ofast", "-DNDEBUG"],
+
+        "cxx": ["-std=gnu++11"]
     }
 }

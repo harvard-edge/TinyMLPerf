@@ -1,0 +1,8 @@
+[mbed] Working path "/Users/max/Desktop/tinyml" (program)
+[mbed] Detecting connected targets/boards to your system...
+[mbed] Opening serial terminal to "NUCLEO_F767ZI"
+--- Terminal on /dev/tty.usbmodem14203 - 9600,8,N,1 ---
+$$$081802210131651C3E75FC39Arithmetic intensity task nfloats = 128, arithmetic intensity = 32.000000, nreps = 100
+2021120
+
+{"AI" : 32.000000, "FLOP" : 1638400, "NFLOATS" : 128, "N_REPS" : 100, "heap_info.alloc_cnt" : 11, "heap_info.alloc_fail_cnt" : 0, "heap_info.current_size" : 4932, "heap_info.max_size" : 4932, "heap_info.reserved_size" : 489168, "heap_info.total_size" : 4932, "stack_info[0].max_size" : 1256, "stack_info[0].reserved_size" : 4096, "stack_info[0].stack_cnt" : 1, "stack_info[0].thread_id" : 536891704, "stack_info[1].max_size" : 64, "stack_info[1].reserved_size" : 896, "stack_info[1].stack_cnt" : 1, "stack_info[1].thread_id" : 536892040, "stack_info[2].max_size" : 104, "stack_info[2].reserved_size" : 768, "stack_info[2].stack_cnt" : 1, "stack_info[2].thread_id" : 536891972, "task_name" : "ArithmeticIntensityTask", "time_elapsed" : 0.008655}
