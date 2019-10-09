@@ -44,7 +44,7 @@ for nfloats, data in by_floats.items():
 
 plt.legend(loc="best")
 plt.xscale("log", basex=2)
-#plt.yscale("log", basey=2)
+plt.yscale("log", basey=2)
 plt.xlabel("Arithmetic Intensity")
 plt.ylabel("INTOPS")
 plt.savefig("roofline.png")
