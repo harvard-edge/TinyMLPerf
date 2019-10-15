@@ -66,7 +66,7 @@ def main():
         fcntl(a.stdout, F_SETFL, flags | O_NONBLOCK)
 
         print("Reading lines")
-        time.sleep(args.timelimit)
+        #time.sleep(args.timelimit)
        
         out = None
         lines = []

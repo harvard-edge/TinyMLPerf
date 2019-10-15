@@ -6,12 +6,15 @@
 #include <mbed.h>
 #endif
 
+// Set up the serial connections
+#ifndef __ON_PCe
+Serial pc(USBTX, USBRX, 9600);   // baud rate of our MCUs
+#endif
+
 #include "uTensor/util/uTensor_util.hpp"
 #include "mbed.h"
 #include "deep_mlp.hpp"
 #define NUM_IMAGES 10
-
-Serial pc(USBTX, USBRX, 9600);
 
 int main()
 {
@@ -22,6 +25,7 @@ int main()
     Tensor *input_tensor; 
     tick();
     for (int i = 0; i < NUM_IMAGES; i++) {
+        printf("Calculating...\n");
         Context ctx;
         input_tensor = new WrappedRamTensor<float>({1, 784}, &(test_image[i][0]));
         get_deep_mlp_ctx(ctx, input_tensor);
@@ -30,7 +34,11 @@ int main()
         // int result = *(prediction->read<int>(0,0));
         // printf("Number guessed %d\n\r", result);
         // printf("Step\n");
+        printf("Done with iter %d\n", i);
     }
     tock();
+
+    print_stats_as_json();
+
     return 0;
 }
