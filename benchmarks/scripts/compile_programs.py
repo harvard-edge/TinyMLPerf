@@ -13,6 +13,7 @@ import sys
 import argparse
 import glob
 import git
+from distutils.dir_util import copy_tree
 
 parser = argparse.ArgumentParser()
 
@@ -49,16 +50,20 @@ def process_model_folder(model_folder):
     @param model_folder: Path object corresponding to the model .pb folder.
     """
     mcu_name = util.get_mcu()
-    cpp_files = list(model_folder.glob("*.[h|c]pp"))
-    if not cpp_files:
+    files = list(model_folder.glob("*"))
+    if not files:
         print(f"There were no c++ files found, skipping directory {model_folder}")
         return
 
     # If we found C++ files, make sure that there are only 3, and we can copy
     # this to our mbed program, and attempt to compile.    
     print("Copying files to our MBED program directory.")
-    for cpp_source_file in cpp_files:
-        shutil.copy(cpp_source_file, ROOT_MBED_PROGRAM_DIR)
+    for source_file in files:
+        if os.path.isdir(str(source_file)):
+            dir_name = str(source_file).split("/")[-1]
+            copy_tree(str(source_file), str(ROOT_MBED_PROGRAM_DIR) + "/" + dir_name)
+        else:
+            shutil.copy(source_file, ROOT_MBED_PROGRAM_DIR)
 
     # Copy over depended files (standard files that are needed and included for 
     # all tasks)
