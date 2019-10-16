@@ -1,4 +1,5 @@
 import sys
+import subprocess
 import glob
 import os
 import re
@@ -14,14 +15,25 @@ class MnistFC(Task):
     def __init__(self):
         self.parser = argparse.ArgumentParser()
 
-    def generate_task(self, output_path, args):
+        self.parser.add_argument("--h1_size", default=128, type=int)
+        self.parser.add_argument("--h2_size", default=128, type=int)
+
+    def generate_task(self, output_path, args):                
         
         # Copy source files over
-        source_files = glob.glob("%s/*[pp|h]" % filepath)
+        source_files = glob.glob("%s/*" % filepath)
         for src in source_files:
             src_name = src.split("/")[-1]
-            copyfile(src, output_path + "/" + src_name) 
-        copy_tree("%s/src" % filepath, output_path+"/src")
+            if os.path.isdir(src):
+                copy_tree("%s" % src, output_path+"/"+src_name)
+            else:
+                copyfile(src, output_path + "/" + src_name) 
+
+        # Run the script to generate hpp
+        cmd = "bash train/train_and_generate.sh %d %d" % (args.h1_size, args.h2_size)
+        commands = ["cd %s && %s" % (output_path, cmd)]
+        process = subprocess.Popen(commands, stdout=subprocess.PIPE, shell=True)
+        out, err = process.communicate()
     
     def task_name(self):
         return "MnistFC"

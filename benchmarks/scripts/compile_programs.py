@@ -55,8 +55,7 @@ def process_model_folder(model_folder):
         print(f"There were no c++ files found, skipping directory {model_folder}")
         return
 
-    # If we found C++ files, make sure that there are only 3, and we can copy
-    # this to our mbed program, and attempt to compile.    
+    # Copy all files over
     print("Copying files to our MBED program directory.")
     for source_file in files:
         if os.path.isdir(str(source_file)):
