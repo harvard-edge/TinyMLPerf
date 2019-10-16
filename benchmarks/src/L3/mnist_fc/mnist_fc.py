@@ -21,7 +21,7 @@ class MnistFC(Task):
     def generate_task(self, output_path, args):                
         
         # Copy source files over
-        source_files = glob.glob("%s/*" % filepath)
+        source_files = glob.glob("%s/src" % filepath) + glob.glob("%s/train" % filepath)
         for src in source_files:
             src_name = src.split("/")[-1]
             if os.path.isdir(src):
