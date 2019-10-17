@@ -44,7 +44,7 @@ class MnistFC(Task):
         print(out.decode('utf-8'))
 
         # Remove the train directory
-        #rmtree("%s/train" % output_path)
+        rmtree("%s/train" % output_path)
     
     def task_name(self):
         return "MnistFC"
