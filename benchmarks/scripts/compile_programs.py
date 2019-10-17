@@ -40,6 +40,13 @@ def copy_over_depended_files():
         print("Error: Mbed program include files directory does not exist (%s)" % MBED_PROGRAM_DIR_INCLUDE_FILES)
     copy_tree(MBED_PROGRAM_DIR_INCLUDE_FILES, str(ROOT_MBED_PROGRAM_DIR))
 
+def copy_tree_timestamp(src, dst):
+    copy_tree(src, dst)
+    for dirpath, _, filenames in os.walk(dst):
+        os.utime(dirpath, None)
+        for file in filenames:
+            os.utime(os.path.join(dirpath, file), None)
+
 def process_model_folder(model_folder):
     """Process model folders. Checks whether or not there is a .cpp, .hpp, and
     weights file. If there is, then we copy these files to our MBED program,
@@ -59,11 +66,14 @@ def process_model_folder(model_folder):
 
     # Copy all files over
     print("Copying files to our MBED program directory.")
-    for source_file in files:
+    for source_file in files:        
         if os.path.isdir(str(source_file)):
             dir_name = str(source_file).split("/")[-1]
-            copy_tree(str(source_file), str(ROOT_MBED_PROGRAM_DIR) + "/" + dir_name)
+            shutil.rmtree(str(ROOT_MBED_PROGRAM_DIR) + "/" + dir_name, ignore_errors=True)
+            copy_tree_timestamp(str(source_file), str(ROOT_MBED_PROGRAM_DIR) + "/" + dir_name)
         else:
+            src_name = str(source_file).split("/")[-1]
+            os.remove(str(ROOT_MBED_PROGRAM_DIR) + "/" + src_name)
             shutil.copy(source_file, ROOT_MBED_PROGRAM_DIR)
 
     # Copy over depended files (standard files that are needed and included for 

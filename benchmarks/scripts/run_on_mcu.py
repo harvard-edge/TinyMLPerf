@@ -52,9 +52,9 @@ def main():
         print(f"Going to work on {model}")
         # Copy the model over, and wait for some time for the utility
         # to flash the model over to the board.        
-        time.sleep(5.0)
+        time.sleep(10.0)
         shutil.copy(model, VOLUMES_MNT)
-        time.sleep(5.0)
+        time.sleep(30.0)
         
         # Run the binary
         print("Running binary")

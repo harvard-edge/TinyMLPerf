@@ -14,6 +14,6 @@ mbed compile \
 mbed compile \
 -m auto \
 -t GCC_ARM \
--DMBED_ALL_STATS_ENABLED=1 
+-DMBED_ALL_STATS_ENABLED=1 \
 #--profile ${gitpath}/benchmarks/misc/mbed_include_files/release.json
 
