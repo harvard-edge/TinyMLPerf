@@ -25,9 +25,6 @@ class MnistFC(Task):
         # Copy source files over
         source_files = ["%s/src" % filepath, "%s/train" % filepath]
         for src in source_files:
-            
-            # Hacky, but don't copy main file over, read it in as a template
-            # then replace specific defines, then write it over. 
 
             src_name = src.split("/")[-1]
             if os.path.isdir(src):
@@ -36,8 +33,8 @@ class MnistFC(Task):
                 copyfile(src, output_path + "/" + src_name) 
 
         # Run the script to generate hpp
-        cmd = "bash train/train_and_generate.sh %d %d" % (args.h1_size, args.h2_size)
-        commands = ["cd %s && %s" % (output_path, cmd)]
+        cmd = "bash train_and_generate.sh %d %d" % (args.h1_size, args.h2_size)
+        commands = ["cd %s/train && %s" % (output_path, cmd)]
         process = subprocess.Popen(commands, stdout=subprocess.PIPE, shell=True)
         out, err = process.communicate()
 
@@ -45,6 +42,9 @@ class MnistFC(Task):
 
         # Remove the train directory
         rmtree("%s/train" % output_path)
+
+        # Super hacky, but replace the src/main.cpp file with template
+        # and insert args + results
     
     def task_name(self):
         return "MnistFC"

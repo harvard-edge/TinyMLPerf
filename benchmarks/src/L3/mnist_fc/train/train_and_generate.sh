@@ -5,11 +5,11 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 python3 ${DIR}/deep_mlp.py $1 $2 2>/dev/null
 utensor-cli convert ${DIR}/mnist_model/deep_mlp.pb --output-nodes=y_pred 2>/dev/null
 
-echo "cp -f ${DIR}/models/* src/"
-echo "cp -f ${DIR}/mnist_model/deep_mlp.pb src/"
+echo "cp -f ${DIR}/models/* ${DIR}/../src/"
+echo "cp -f ${DIR}/mnist_model/deep_mlp.pb ${DIR}/../src/"
 
-cp -f ${DIR}/models/* src/
-cp -f ${DIR}/mnist_model/deep_mlp.pb src/
+cp -f ${DIR}/models/* ${DIR}/../src/
+cp -f ${DIR}/mnist_model/deep_mlp.pb ${DIR}/../src/
 
 # Cleanup
 rm -rf ${DIR}/models
