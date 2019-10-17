@@ -5,7 +5,7 @@ import os
 import re
 import argparse
 from task import Task
-from shutil import copyfile
+from shutil import copyfile, rmtree
 from distutils.dir_util import copy_tree
 
 filepath =  os.path.dirname(os.path.abspath(__file__))
@@ -15,14 +15,20 @@ class MnistFC(Task):
     def __init__(self):
         self.parser = argparse.ArgumentParser()
 
-        self.parser.add_argument("--h1_size", default=128, type=int)
-        self.parser.add_argument("--h2_size", default=128, type=int)
+        self.parser.add_argument("--h1_size", default=None, type=int)
+        self.parser.add_argument("--h2_size", default=None, type=int)
 
     def generate_task(self, output_path, args):                
+        assert(args.h1_size is not None)
+        assert(args.h2_size is not None)
         
         # Copy source files over
-        source_files = glob.glob("%s/src" % filepath) + glob.glob("%s/train" % filepath)
+        source_files = ["%s/src" % filepath, "%s/train" % filepath]
         for src in source_files:
+            
+            # Hacky, but don't copy main file over, read it in as a template
+            # then replace specific defines, then write it over. 
+
             src_name = src.split("/")[-1]
             if os.path.isdir(src):
                 copy_tree("%s" % src, output_path+"/"+src_name)
@@ -34,6 +40,11 @@ class MnistFC(Task):
         commands = ["cd %s && %s" % (output_path, cmd)]
         process = subprocess.Popen(commands, stdout=subprocess.PIPE, shell=True)
         out, err = process.communicate()
+
+        print(out.decode('utf-8'))
+
+        # Remove the train directory
+        #rmtree("%s/train" % output_path)
     
     def task_name(self):
         return "MnistFC"

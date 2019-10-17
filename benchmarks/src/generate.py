@@ -32,8 +32,10 @@ def load_tiers_and_tasks():
             module_name = module_path.split("/")[-1].replace(".py", "")
             if module_name in filter_modules:
                 continue
+            print("="*50)
             print("Loading module: %s with path %s" % 
                   (module_name, module_path))
+            print("="*50)
             
             # Load module
             spec = importlib.util.spec_from_file_location(module_name,
@@ -55,13 +57,11 @@ def load_tiers_and_tasks():
                 print("Loaded %s/%s" % (d, task_name))
     return task_names, tiers_tasks_dict
 
-
 def materialize_argument_ranges(raw_arg_list):
     argwords = raw_arg_list[0:len(raw_arg_list):2]
     ranges = raw_arg_list[1:len(raw_arg_list):2]
     ranges_materialized = [list(eval(x)) for x in ranges]
     return argwords, ranges_materialized
-
 
 if __name__ == "__main__":
     args, unknown_args = parser.parse_known_args()

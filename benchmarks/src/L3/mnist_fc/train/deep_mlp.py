@@ -1,13 +1,16 @@
 #!/usr/bin/python
-# -*- coding: utf8 -*-
 """
 # This script is based on:
 # https://www.tensorflow.org/get_started/mnist/pros
 """
 from __future__ import print_function
-import argparse
 import sys
+import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'  # or any {'0', '1', '2'}
 import tensorflow as tf
+tf.get_logger().setLevel('INFO')
+tf.autograph.set_verbosity(1)
+import argparse
 from tensorflow.examples.tutorials.mnist import input_data
 from tensorflow.python.framework import graph_util as gu
 from tensorflow.tools.graph_transforms import TransformGraph
@@ -16,6 +19,10 @@ FLAGS = None
 
 fc1_size = int(sys.argv[1])
 fc2_size = int(sys.argv[2])
+
+print("="*100)
+print("RUNNING deep_mlp.py WITH FC1=%d, FC2=%d" % (fc1_size, fc2_size))
+print("="*100)
 
 # helper functions
 def weight_variable(shape, name):
@@ -37,6 +44,7 @@ def deepnn(x):
   print("Using layer sizes: %d %d" % (fc1_size, fc2_size))
 
   W_fc1 = weight_variable([784, tgt_fc1_size], name='W_fc1')
+  print(W_fc1.get_shape().as_list())
   b_fc1 = bias_variable([tgt_fc1_size], name='b_fc1')
   a_fc1 = tf.add(tf.matmul(x, W_fc1), b_fc1, name="zscore")
   h_fc1 = tf.nn.relu(a_fc1)

@@ -52,8 +52,10 @@ def process_model_folder(model_folder):
     mcu_name = util.get_mcu()
     files = list(model_folder.glob("*"))
     if not files:
-        print(f"There were no c++ files found, skipping directory {model_folder}")
+        print(f"There were no files found, skipping directory {model_folder}")
         return
+    else:
+        print("Copying files", files)
 
     # Copy all files over
     print("Copying files to our MBED program directory.")
