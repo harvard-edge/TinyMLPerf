@@ -32,6 +32,8 @@ args = parser.parse_args()
 def get_volume():
     #x3'/Volumes/NODE_F767ZI'
     target_volume = [x for x in glob.glob("/Volumes/*") if "NODE_" in x]
+    # For linux, it might be in media
+    target_volume += list(Path('/media').rglob("*NODE*"))
     return target_volume[0]
 
 project_base_dir = get_git_root(os.path.dirname(os.path.abspath(__file__))) 
@@ -49,7 +51,7 @@ def main():
             pass
         
         model = binaries[0]        
-        print(f"Going to work on {model}")
+        print("Going to work on {}".format(model))
         # Copy the model over, and wait for some time for the utility
         # to flash the model over to the board.        
         time.sleep(10.0)

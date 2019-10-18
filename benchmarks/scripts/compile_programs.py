@@ -23,8 +23,8 @@ args = parser.parse_args()
 
 ROOT_MBED_PROGRAM_DIR = Path.cwd() / args.mbed_program_dir
 
-if not os.path.exists(ROOT_MBED_PROGRAM_DIR):
-    os.makedirs(ROOT_MBED_PROGRAM_DIR);
+if not ROOT_MBED_PROGRAM_DIR.is_dir():
+    os.makedirs(ROOT_MBED_PROGRAM_DIR)
 
 def get_git_root(path):
     git_repo = git.Repo(path, search_parent_directories=True)
@@ -59,7 +59,7 @@ def process_model_folder(model_folder):
     mcu_name = util.get_mcu()
     files = list(model_folder.glob("*"))
     if not files:
-        print(f"There were no files found, skipping directory {model_folder}")
+        print("There were no files found, skipping directory {}".format(model_folder))
         return
     else:
         print("Copying files", files)
@@ -81,7 +81,7 @@ def process_model_folder(model_folder):
     copy_over_depended_files()
     
     # Now call the compilation.        
-    run(['sh', project_base_dir + '/benchmarks/scripts/compile.sh'], cwd=ROOT_MBED_PROGRAM_DIR)
+    run(['sh', str(project_base_dir) + '/benchmarks/scripts/compile.sh'], cwd=str(ROOT_MBED_PROGRAM_DIR))
     compiled_binary_files = list((ROOT_MBED_PROGRAM_DIR / 'BUILD/').glob("%s/*/*.bin" % mcu_name))
     if not compiled_binary_files:
         print("Couldn't find the compiled binary")
@@ -91,7 +91,7 @@ def process_model_folder(model_folder):
 
     # If this was successful, copy the file back to our model directory.
     compiled_path = model_folder / '{}_prog.bin'.format(mcu_name)
-    shutil.copy(compiled_binary_file, compiled_path)
+    shutil.copy(str(compiled_binary_file), str(compiled_path))
 
     print("Writing compiled binary to: %s" % str(compiled_path))
     
