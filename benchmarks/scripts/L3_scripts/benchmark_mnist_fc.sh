@@ -13,6 +13,7 @@ mkdir -p ${compile_dir}
 
 pushd ${compile_dir}
 mbed new .
+cp ../artifacts/release.json .
 popd
 
 #h1_size=( 32 128 256 512 1024 )

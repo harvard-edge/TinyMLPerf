@@ -42,9 +42,10 @@ MODEL_FOLDER = Path(args.target)
 
 def main():    
     model_path = MODEL_FOLDER
-    files = list(model_path.glob("*"))
+    files = list(model_path.glob("*.bin"))
+    # print(model_path)
+    # print(files)
     binaries = []
-    ran = set()
     for file in files:
         if ".bin" in str(file):
             binaries.append(file)
@@ -55,7 +56,7 @@ def main():
         # Copy the model over, and wait for some time for the utility
         # to flash the model over to the board.        
         time.sleep(10.0)
-        shutil.copy(model, VOLUMES_MNT)
+        shutil.copy(str(model), str(VOLUMES_MNT))
         time.sleep(30.0)
         
         # Run the binary

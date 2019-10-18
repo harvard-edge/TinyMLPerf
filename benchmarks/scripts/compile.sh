@@ -11,17 +11,9 @@ mbed compile \
 -DMBED_ALL_STATS_ENABLED=1 \
 --profile ${gitpath}/benchmarks/misc/mbed_include_files/release.json"
 
-if [ ! -f release.json ]; then
-echo "Not using a profile, standard compilation"
-mbed compile \
--m auto \
--t GCC_ARM \
--DMBED_ALL_STATS_ENABLED=1 \
-else
 echo "Using a compilation profile"
 mbed compile \
 -m auto \
 -t GCC_ARM \
--DMBED_ALL_STATS_ENABLED=1 \
---profile release.json
-fi
+-DMBED_ALL_STATS_ENABLED=1
+# --profile ../artifacts/release.json
