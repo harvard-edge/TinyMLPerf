@@ -20,7 +20,7 @@ class MnistFC(Task):
 
     def generate_task(self, output_path, args):                
         assert(args.h1_size is not None)
-        assert(args.h2_size is not None)
+        assert(args.h2_size is not None)    
         
         # Copy source files over
         source_files = ["%s/src" % filepath, "%s/train" % filepath]

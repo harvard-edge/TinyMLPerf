@@ -6,10 +6,7 @@
 from __future__ import print_function
 import sys
 import os
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'  # or any {'0', '1', '2'}
 import tensorflow as tf
-tf.get_logger().setLevel('INFO')
-tf.autograph.set_verbosity(1)
 import argparse
 from tensorflow.examples.tutorials.mnist import input_data
 from tensorflow.python.framework import graph_util as gu

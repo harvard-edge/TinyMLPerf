@@ -2,7 +2,10 @@
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
-python3 ${DIR}/deep_mlp.py $1 $2 2>/dev/null
+echo "Mnist FC train_and_generate.sh running deep_mlp.py"
+python3 ${DIR}/deep_mlp.py $1 $2  2>/dev/null
+
+echo "Mnist FC train_and_generate.sh utensor-cli convert"
 utensor-cli convert ${DIR}/mnist_model/deep_mlp.pb --output-nodes=y_pred 2>/dev/null
 
 echo "cp -f ${DIR}/models/* ${DIR}/../src/"
