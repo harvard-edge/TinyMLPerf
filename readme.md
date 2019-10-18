@@ -42,6 +42,14 @@ For example, the NUCLEO F767ZI board has the target `NUCLEO_F767ZI`.
 
 ## Troubleshooting
 
+### mbed sterm doesn't work
+
+Make sure that the current user is in dialout if using Ubuntu.
+
+```bash
+sudo adduser $(whoami) dialout
+```
+
 ### Serialization Error in TF
 
 If the tensorflow stuff gives you an error with serialization:
