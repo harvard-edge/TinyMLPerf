@@ -19,12 +19,12 @@ popd
 #h1_size=( 32 128 256 512 1024 )
 #h2_size=( 32 128 256 512 1024 )
 
-h1_size=( 32 128 )
-h2_size=( 32 128 )
+h1_size=( 8 16 32 64 128 )
+h2_size=( 8 16 32 64 128 )
 
 # Generate directories for 10, 100, 1000, 10000, 100000 byte read/write
 #python3 benchmarks/src/generate.py --tier L3 --task MnistFC --output-path ${generate_dir} --h1_size "[32,128,256,512,1024]" --h2_size "[32,128,256,512,1024]"
-python3 benchmarks/src/generate.py --tier L3 --task MnistFC --output-path ${generate_dir} --h1_size "[32,128]" --h2_size "[32,128]"
+python3 benchmarks/src/generate.py --tier L3 --task MnistFC --output-path ${generate_dir} --h1_size "[8, 16, 32, 64, 128]" --h2_size "[8, 16, 32, 64, 128]"
 
 for ((ii = 0; ii < ${#h1_size[@]}; ++ii)); do
     i="${h1_size[$ii]}"
