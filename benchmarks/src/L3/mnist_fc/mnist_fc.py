@@ -1,4 +1,5 @@
 import sys
+import json
 import subprocess
 import glob
 import os
@@ -39,6 +40,16 @@ class MnistFC(Task):
         out, err = process.communicate()
 
         print(out.decode('utf-8'))
+
+        # Run another script to evaluate the network on mnist
+        # and gather parameters to channel to the cpp script
+        cmd = "bash gather_channeled_data.sh %d %d" % (args.h1_size, args.h2_size)
+        commands = ["cd %s/train && %s" % (output_path, cmd)]        
+        process = subprocess.Popen(commands, stdout=subprocess.PIPE, shell=True)
+        out, err = process.communicate()
+        out = out.decode('utf-8').strip()
+        channeled_data = json.loads(out.split("\n")[-1])
+        print(channeled_data)
 
         # Remove the train directory
         rmtree("%s/train" % output_path)

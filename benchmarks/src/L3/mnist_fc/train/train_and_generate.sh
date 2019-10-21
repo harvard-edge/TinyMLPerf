@@ -6,13 +6,18 @@ echo "Mnist FC train_and_generate.sh running deep_mlp.py"
 python3 ${DIR}/deep_mlp.py $1 $2  2>/dev/null
 
 echo "Mnist FC train_and_generate.sh utensor-cli convert"
-utensor-cli convert ${DIR}/mnist_model/deep_mlp.pb --output-nodes=y_pred 2>/dev/null
+# Once for extracting the final graph transform, again for generating cpp files
+utensor-cli convert ${DIR}/mnist_model/deep_mlp.pb --output-nodes=y_pred --save-graph --transform-methods dropout,quantize,biasAdd,remove_id_op,refcnt 2>/dev/null
+mv quant_deep_mlp.pkl quant_deep_mlp_target.pkl
+utensor-cli convert ${DIR}/mnist_model/deep_mlp.pb --output-nodes=y_pred --save-graph 2>/dev/null
 
 echo "cp -f ${DIR}/models/* ${DIR}/../src/"
 echo "cp -f ${DIR}/mnist_model/deep_mlp.pb ${DIR}/../src/"
+echo "cp -f ${DIR}/mnist_model/deep_mlp_final.pb ${DIR}/../src/"
 
 cp -f ${DIR}/models/* ${DIR}/../src/
 cp -f ${DIR}/mnist_model/deep_mlp.pb ${DIR}/../src/
+cp -f ${DIR}/mnist_model/deep_mlp_final.pb ${DIR}/../src/
 
 # Cleanup
 rm -rf ${DIR}/models

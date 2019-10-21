@@ -43,13 +43,13 @@ def deepnn(x):
   W_fc1 = weight_variable([784, tgt_fc1_size], name='W_fc1')
   print(W_fc1.get_shape().as_list())
   b_fc1 = bias_variable([tgt_fc1_size], name='b_fc1')
-  a_fc1 = tf.add(tf.matmul(x, W_fc1), b_fc1, name="zscore")
+  a_fc1 = tf.add(tf.matmul(x, W_fc1), b_fc1, name="activations_1")
   h_fc1 = tf.nn.relu(a_fc1)
   layer1 = tf.nn.dropout(h_fc1, 0.50)
 
   W_fc2 = weight_variable([tgt_fc1_size, tgt_fc2_size], name='W_fc2')
   b_fc2 = bias_variable([tgt_fc2_size], name='b_fc2')
-  a_fc2 = tf.add(tf.matmul(layer1, W_fc2), b_fc2, name="zscore")
+  a_fc2 = tf.add(tf.matmul(layer1, W_fc2), b_fc2, name="activations_2")
   h_fc2 = tf.nn.relu(a_fc2)
   layer2 = tf.nn.dropout(h_fc2, 0.50)
 
