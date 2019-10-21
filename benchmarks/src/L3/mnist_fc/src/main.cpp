@@ -23,6 +23,9 @@ Serial pc(USBTX, USBRX, 9600);   // baud rate of our MCUs
 int main()
 {
     register_task("MnistFC");
+    register_kv("h1", to_string(H1_SIZE));
+    register_kv("h2", to_string(H2_SIZE));
+    register_kv("accuracy", to_string(ACCURACY));
     printf("MnistFC Task\n");
 
     static float test_image[NUM_IMAGES][28 * 28];
