@@ -19,6 +19,12 @@ class MnistFC(Task):
         self.parser.add_argument("--h1_size", default=None, type=int)
         self.parser.add_argument("--h2_size", default=None, type=int)
 
+    def replace_params(self, template, data):
+        for k,v in data.items():
+            kstr = "{{%s}}" % k
+            template = template.replace(kstr, str(v))
+        return template
+
     def generate_task(self, output_path, args):                
         assert(args.h1_size is not None)
         assert(args.h2_size is not None)    
@@ -56,6 +62,12 @@ class MnistFC(Task):
 
         # Super hacky, but replace the src/main.cpp file with template
         # and insert args + results
+        with open("%s/src/main.cpp" % output_path, "r") as f:
+            template = f.read()
+            template = self.replace_params(template, channeled_data)
+
+        with open("%s/src/main.cpp" % output_path, "w") as f:
+            f.write(template)
     
     def task_name(self):
         return "MnistFC"

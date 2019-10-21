@@ -16,8 +16,9 @@ Serial pc(USBTX, USBRX, 9600);   // baud rate of our MCUs
 #include "deep_mlp.hpp"
 #define NUM_IMAGES 10
 
-//#define H1_SIZE {{H1_SIZE}}
-//#define H2_SIZE {{H2_SIZE}}
+#define H1_SIZE {{h2}}
+#define H2_SIZE {{h1}}
+#define ACCURACY {{accuracy}}
 
 int main()
 {
