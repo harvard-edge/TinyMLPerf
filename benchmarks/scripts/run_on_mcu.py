@@ -3,6 +3,7 @@ the MCUs."""
 from subprocess import PIPE, Popen
 from threading  import Thread
 from queue import Queue
+import json
 import subprocess
 from subprocess import run
 from subprocess import check_output 
@@ -40,11 +41,8 @@ project_base_dir = get_git_root(os.path.dirname(os.path.abspath(__file__)))
 VOLUMES_MNT = get_volume()
 MODEL_FOLDER = Path(args.target)
 
-def main():    
-    model_path = MODEL_FOLDER
+def run_on_mcu(model_path):
     files = list(model_path.glob("*.bin"))
-    # print(model_path)
-    # print(files)
     binaries = []
     for file in files:
         if ".bin" in str(file):
@@ -53,9 +51,9 @@ def main():
         
         model = binaries[0]        
         print("Going to work on {}".format(model))
+
         # Copy the model over, and wait for some time for the utility
         # to flash the model over to the board.        
-        time.sleep(10.0)
         shutil.copy(str(model), str(VOLUMES_MNT))
         time.sleep(30.0)
         
@@ -69,13 +67,11 @@ def main():
         fcntl(a.stdout, F_SETFL, flags | O_NONBLOCK)
 
         print("Reading lines")
-        #time.sleep(args.timelimit)
        
         out = None
         lines = []
         t = time.time()
         while True:
-            print("Iterating lines...")
             while True:
                 try:
                     line = os.read(a.stdout.fileno(), 1024)
@@ -86,6 +82,7 @@ def main():
                     break
             print("Got: ", lines)
             time.sleep(1)
+            print("%f seconds left" % (args.timelimit-(time.time()-t)))
             if time.time()-t >= args.timelimit:
                 break
         
@@ -94,15 +91,22 @@ def main():
         time.sleep(0.5)
         a.kill()
         
-        print("Writing lines")
         lines = [x for x in lines if x.decode("utf-8").strip() != ""]
-        print(lines)
-        with open(args.output_path, "w") as f:
-            f.write("".join([x.decode("utf-8") for x in lines]))
+        lines_stacked = "".join([x.decode("utf-8") for x in lines]).strip()
+        return json.loads(lines_stacked.splitlines()[-1])
 
-        # Hack to only eval 1 binary
-        break
-
+def main():    
+    model_path = MODEL_FOLDER
+    for i in range(10):
+        try:
+            result = run_on_mcu(model_path)
+            print("Success!")
+            break
+        except:
+            print("Run on mcu failed... Retrying")
+            result = {"Error" : "Failed."}
+    with open(args.output_path, "w") as f:
+        f.write(json.dumps(result))
 
 if __name__ == '__main__':
     main()
