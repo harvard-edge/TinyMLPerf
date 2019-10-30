@@ -16,14 +16,11 @@ mbed new .
 cp ../artifacts/release.json .
 popd
 
-#h1_size=( 8 16 32 64 128 256 512 1024 )
-#h2_size=( 8 16 32 64 128 256 512 1024 )
-
-h1_size=( 8 16 )
-h2_size=( 8 16 )
+h1_size=( 8 16 32 64 128 )
+h2_size=( 8 16 32 64 128 )
 
 # Generate directories for 10, 100, 1000, 10000, 100000 byte read/write
-python3 benchmarks/src/generate.py --tier L3 --task MnistFC --output-path ${generate_dir} --h1_size "[8,16]" --h2_size "[8,16]"
+python3 benchmarks/src/generate.py --tier L3 --task MnistFC --output-path ${generate_dir} --h1_size "[8,16,32,64,128]" --h2_size "[8,16,32,64,128]"
 
 for i in "${h1_size[@]}"; do
     for j in "${h2_size[@]}"; do
