@@ -73,7 +73,8 @@ def process_model_folder(model_folder):
             copy_tree_timestamp(str(source_file), str(ROOT_MBED_PROGRAM_DIR) + "/" + dir_name)
         else:
             src_name = str(source_file).split("/")[-1]
-            os.remove(str(ROOT_MBED_PROGRAM_DIR) + "/" + src_name)
+            if os.path.exists(str(ROOT_MBED_PROGRAM_DIR) + "/" + src_name):
+                os.remove(str(ROOT_MBED_PROGRAM_DIR) + "/" + src_name)
             shutil.copy(source_file, ROOT_MBED_PROGRAM_DIR)
 
     # Copy over depended files (standard files that are needed and included for 

@@ -4,8 +4,8 @@ generate_dir="mnist_fc_tasks"
 compile_dir="mnist_fc_compile"
 outpath=$1
 
-rm -rf ${generate_dir}
-mkdir -p ${generate_dir}
+#rm -rf ${generate_dir}
+#mkdir -p ${generate_dir}
 rm -rf ${outpath}
 mkdir -p ${outpath}
 rm -rf ${compile_dir}
@@ -20,7 +20,7 @@ h1_size=( 8 16 32 64 128 256 512 1024 )
 h2_size=( 8 16 32 64 128 256 512 1024 )
 
 # Generate directories for 10, 100, 1000, 10000, 100000 byte read/write
-python3 benchmarks/src/generate.py --tier L3 --task MnistFC --output-path ${generate_dir} --h1_size "[8,16,32,64,128,256,512,1024]" --h2_size "[8,16,32,64,128,256,512,1024]"
+#python3 benchmarks/src/generate.py --tier L3 --task MnistFC --output-path ${generate_dir} --h1_size "[8,16,32,64,128,256,512,1024]" --h2_size "[8,16,32,64,128,256,512,1024]"
 
 for i in "${h1_size[@]}"; do
     for j in "${h2_size[@]}"; do
