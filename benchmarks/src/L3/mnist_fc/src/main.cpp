@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "utils.h"
-#include <SWO.h>
 
 
 #ifndef __ON_PC
@@ -11,7 +10,6 @@
 // Set up the serial connections
 #ifndef __ON_PCe
 Serial pc(USBTX, USBRX, 9600);   // baud rate of our MCUs
-SWO_Channel swo("channel");
 #endif
 
 #include "uTensor/util/uTensor_util.hpp"
@@ -49,7 +47,6 @@ int main()
     tock();
 
     print_stats_as_json();
-    swo.printf("YOOO\n")
 
     return 0;
 }
