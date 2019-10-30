@@ -13,11 +13,11 @@ utensor-cli convert ${DIR}/mnist_model/deep_mlp.pb --output-nodes=y_pred --save-
 
 echo "cp -f ${DIR}/models/* ${DIR}/../src/"
 echo "cp -f ${DIR}/mnist_model/deep_mlp.pb ${DIR}/../src/"
-echo "cp -f ${DIR}/mnist_model/deep_mlp_final.pb ${DIR}/../src/"
+#echo "cp -f ${DIR}/mnist_model/deep_mlp_final.pb ${DIR}/../src/"
 
 cp -f ${DIR}/models/* ${DIR}/../src/
 cp -f ${DIR}/mnist_model/deep_mlp.pb ${DIR}/../src/
-cp -f ${DIR}/mnist_model/deep_mlp_final.pb ${DIR}/../src/
+#cp -f ${DIR}/mnist_model/deep_mlp_final.pb ${DIR}/../src/
 
 # Cleanup
 rm -rf ${DIR}/models
