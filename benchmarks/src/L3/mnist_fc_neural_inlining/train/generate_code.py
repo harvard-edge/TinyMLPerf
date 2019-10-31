@@ -6,12 +6,12 @@ import pickle
 def generate_inlined(d):
     d = {k:v.T for k,v in d.items()}
 
-    W_1_flattened = (d["W_1"]*100).flatten()
-    W_2_flattened = (d["W_2"]*100).flatten()
-    W_3_flattened = (d["W_3"]*100).flatten()
-    b_1_flattened = (d["b_1"]*100).flatten()
-    b_2_flattened = (d["b_2"]*100).flatten()
-    b_3_flattened = (d["b_3"]*100).flatten()
+    W_1_flattened = (d["W_1"]).flatten()
+    W_2_flattened = (d["W_2"]).flatten()
+    W_3_flattened = (d["W_3"]).flatten()
+    b_1_flattened = (d["b_1"]).flatten()
+    b_2_flattened = (d["b_2"]).flatten()
+    b_3_flattened = (d["b_3"]).flatten()
 
     HIDDEN1 = d["W_1"].shape[0]
     INPUT_SHAPE = d["W_1"].shape[1]
@@ -19,8 +19,9 @@ def generate_inlined(d):
     OUTPUT_SHAPE = 10
 
     string = """
-        float o11=0,o12=0,o13=0,o14=0,o15=0,o16=0,o17=0,o10=0;
-        float o21=0,o22=0,o23=0,o24=0,o25=0,o26=0,o27=0,o20=0;
+        float o1[{{HIDDEN1}}], o2[{{HIDDEN2}}];
+        memset(o1, 0, sizeof(float)*{{HIDDEN1}});
+        memset(o2, 0, sizeof(float)*{{HIDDEN2}});
     """
     string = string.replace("{{HIDDEN1}}", str(HIDDEN1))
     string = string.replace("{{HIDDEN2}}", str(HIDDEN2))
@@ -30,31 +31,31 @@ def generate_inlined(d):
         for j in range(INPUT_SHAPE):
             if j != 0:
                 sum_string += " + "
-            sum_string += "(%d) * (in[%d]) " % (W_1_flattened[i*INPUT_SHAPE+j], j)
-        string += "o1%d += %s;\n" % (i, sum_string)
+            sum_string += "(%f) * (in[%d]) " % (W_1_flattened[i*INPUT_SHAPE+j], j)
+        string += "o1[%d] += %s;\n" % (i, sum_string)
 
     for i in range(HIDDEN1):
-        string += "o1%d += %d;\n" % (i, b_1_flattened[i])
-        string += "o1%d = o1%d < 0 ? 0 : o1%d;\n" % (i, i, i)
+        string += "o1[%d] += %d;\n" % (i, b_1_flattened[i])
+        string += "o1[%d] = o1[%d] < 0 ? 0 : o1[%d];\n" % (i, i, i)
 
     for i in range(HIDDEN2):
         sum_string = ""
         for j in range(HIDDEN1):
             if j != 0:
                 sum_string += " + "
-            sum_string += "(%d) * (o1%d) " % (W_2_flattened[i*HIDDEN1+j], j)
-        string += "o2%d += %s;\n" % (i, sum_string)
+            sum_string += "(%f) * (o1[%d]) " % (W_2_flattened[i*HIDDEN1+j], j)
+        string += "o2[%d] += %s;\n" % (i, sum_string)
 
     for i in range(HIDDEN2):
-        string += "o2%d += %d;\n" % (i, b_2_flattened[i])
-        string += "o2%d = o2%d < 0 ? 0 : o2%d;\n" % (i, i, i)
+        string += "o2[%d] += %d;\n" % (i, b_2_flattened[i])
+        string += "o2[%d] = o2[%d] < 0 ? 0 : o2[%d];\n" % (i, i, i)
 
     for i in range(OUTPUT_SHAPE):
         sum_string = ""
         for j in range(HIDDEN2):
             if j != 0:
                 sum_string += " + "
-            sum_string += "(%d) * (o2%d) " % (W_3_flattened[i*HIDDEN2+j], j)
+            sum_string += "(%f) * (o2[%d]) " % (W_3_flattened[i*HIDDEN2+j], j)
         string += "out[%d] += %s;\n" % (i, sum_string)
 
     for i in range(OUTPUT_SHAPE):

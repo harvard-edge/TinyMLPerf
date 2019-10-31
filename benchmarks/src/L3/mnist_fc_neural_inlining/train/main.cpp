@@ -31,7 +31,7 @@ int main() {
     
     uint64_t start = rdtsc();
     //inference_baseline(in, out);
-    inference_inlined((int *)in, (int *)out);
+    inference_inlined(in, out);
     uint64_t elapsed = rdtsc()-start;
 
     for (int i = 0; i < 10; i++) {

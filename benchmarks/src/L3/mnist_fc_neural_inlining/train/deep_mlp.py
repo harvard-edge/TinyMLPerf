@@ -18,6 +18,7 @@ FLAGS = None
 
 fc1_size = int(sys.argv[1])
 fc2_size = int(sys.argv[2])
+sparsity = float(sys.argv[3])
 
 print("="*100)
 print("RUNNING deep_mlp.py WITH FC1=%d, FC2=%d" % (fc1_size, fc2_size))
@@ -117,19 +118,18 @@ def main(_):
       feed_dict = {x: batch_images, y_: batch_labels, l1_scale:l1_scale_scalar}
       train_step.run(feed_dict=feed_dict)
       if i % FLAGS.log_iter == 0:        
-        train_accuracy = accuracy.eval(feed_dict=feed_dict)
-        print('step %d, training accuracy %g (l1=%f)' % (i, train_accuracy, l1_scale_scalar))
-        if train_accuracy >= .99:
-          l1_scale_scalar += .0001
         W_1, b_1, W_2, b_2, W_3, b_3 = sess.run([W_fc1, b_fc1,
                                                  W_fc2, b_fc2,
                                                  W_fc3, b_fc3])
-        W_1 = (1-(np.abs(W_1) < 1e-4)) * W_1
-        W_2 = (1-(np.abs(W_2) < 1e-4)) * W_2
-        W_3 = (1-(np.abs(W_3) < 1e-4)) * W_3
-        sess.run(assign_W1, feed_dict={W1_pl : W_1})
-        sess.run(assign_W2, feed_dict={W2_pl : W_2})
-        sess.run(assign_W3, feed_dict={W3_pl : W_3})
+        if i >= 10000:
+          W_1 = (1-((np.abs(W_1) < np.percentile(np.abs(W_1), sparsity)))) * W_1
+          W_2 = (1-((np.abs(W_2) < np.percentile(np.abs(W_2), sparsity)))) * W_2
+          W_3 = (1-((np.abs(W_3) < np.percentile(np.abs(W_3), sparsity)))) * W_3
+          sess.run(assign_W1, feed_dict={W1_pl : W_1})
+          sess.run(assign_W2, feed_dict={W2_pl : W_2})
+          sess.run(assign_W3, feed_dict={W3_pl : W_3})
+        train_accuracy = accuracy.eval(feed_dict=feed_dict)
+        print('step %d, training accuracy %g (l1=%f)' % (i, train_accuracy, l1_scale_scalar))
         W_1, b_1, W_2, b_2, W_3, b_3 = sess.run([W_fc1, b_fc1,
                                                  W_fc2, b_fc2,
                                                  W_fc3, b_fc3])
@@ -189,7 +189,7 @@ if __name__ == '__main__':
                       help='session check point (default: %(default)s)')
   parser.add_argument('-n', '--num-iteration', type=int,
                       dest='num_iter',
-                      default=200000,
+                      default=50000,
                       help='number of iterations (default: %(default)s)')
   parser.add_argument('--batch-size', dest='batch_size',
                       default=50, type=int,

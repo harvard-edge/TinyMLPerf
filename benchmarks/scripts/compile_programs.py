@@ -83,7 +83,7 @@ def process_model_folder(model_folder):
     
     # Now call the compilation.        
     run(['sh', str(project_base_dir) + '/benchmarks/scripts/compile.sh'], cwd=str(ROOT_MBED_PROGRAM_DIR))
-    compiled_binary_files = list((ROOT_MBED_PROGRAM_DIR / 'BUILD/').glob("%s/*/*.bin" % mcu_name))
+    compiled_binary_files = list((ROOT_MBED_PROGRAM_DIR / 'BUILD/').glob("*/*/*.bin"))
     if not compiled_binary_files:
         print("Couldn't find the compiled binary")
         return
