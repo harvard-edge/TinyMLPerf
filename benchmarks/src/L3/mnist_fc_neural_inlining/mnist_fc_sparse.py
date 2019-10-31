@@ -15,7 +15,7 @@ class MnistFC(Task):
     def __init__(self):
         self.parser = argparse.ArgumentParser()
         self.parser.add_argument("--sparsity", default=None, type=float)
-        self.h1_size, self.h2_size = 64, 64
+        self.h1_size, self.h2_size = 8, 64
 
     def replace_params(self, template, data):
         for k,v in data.items():
