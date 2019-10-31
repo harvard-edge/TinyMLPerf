@@ -1,0 +1,258 @@
+Mnist FC train_and_generate.sh running deep_mlp.py
+====================================================================================================
+RUNNING deep_mlp.py WITH FC1=32, FC2=32
+====================================================================================================
+Successfully downloaded train-images-idx3-ubyte.gz 9912422 bytes.
+Extracting mnist_data/train-images-idx3-ubyte.gz
+Successfully downloaded train-labels-idx1-ubyte.gz 28881 bytes.
+Extracting mnist_data/train-labels-idx1-ubyte.gz
+Successfully downloaded t10k-images-idx3-ubyte.gz 1648877 bytes.
+Extracting mnist_data/t10k-images-idx3-ubyte.gz
+Successfully downloaded t10k-labels-idx1-ubyte.gz 4542 bytes.
+Extracting mnist_data/t10k-labels-idx1-ubyte.gz
+Using layer sizes: 32 32
+step 1000, training accuracy 0.9 (l1=0.000000)
+25088 nnz of 25088
+1024 nnz of 1024
+320 nnz of 320
+step 2000, training accuracy 0.92 (l1=0.000000)
+25088 nnz of 25088
+1024 nnz of 1024
+320 nnz of 320
+step 3000, training accuracy 0.88 (l1=0.000000)
+25088 nnz of 25088
+1024 nnz of 1024
+320 nnz of 320
+step 4000, training accuracy 0.98 (l1=0.000000)
+25088 nnz of 25088
+1024 nnz of 1024
+320 nnz of 320
+step 5000, training accuracy 0.92 (l1=0.000000)
+25088 nnz of 25088
+1024 nnz of 1024
+320 nnz of 320
+step 6000, training accuracy 0.88 (l1=0.000000)
+25088 nnz of 25088
+1024 nnz of 1024
+320 nnz of 320
+step 7000, training accuracy 0.9 (l1=0.000000)
+25088 nnz of 25088
+1024 nnz of 1024
+320 nnz of 320
+step 8000, training accuracy 0.88 (l1=0.000000)
+25088 nnz of 25088
+1024 nnz of 1024
+320 nnz of 320
+step 9000, training accuracy 0.94 (l1=0.000000)
+25088 nnz of 25088
+1024 nnz of 1024
+320 nnz of 320
+step 10000, training accuracy 0.92 (l1=0.000000)
+12544 nnz of 25088
+512 nnz of 1024
+160 nnz of 320
+step 11000, training accuracy 0.94 (l1=0.000000)
+12544 nnz of 25088
+512 nnz of 1024
+160 nnz of 320
+step 12000, training accuracy 0.98 (l1=0.000000)
+12544 nnz of 25088
+512 nnz of 1024
+160 nnz of 320
+step 13000, training accuracy 0.9 (l1=0.000000)
+12544 nnz of 25088
+512 nnz of 1024
+160 nnz of 320
+step 14000, training accuracy 0.92 (l1=0.000000)
+12544 nnz of 25088
+512 nnz of 1024
+160 nnz of 320
+step 15000, training accuracy 0.88 (l1=0.000000)
+12544 nnz of 25088
+512 nnz of 1024
+160 nnz of 320
+step 16000, training accuracy 0.96 (l1=0.000000)
+12544 nnz of 25088
+512 nnz of 1024
+160 nnz of 320
+step 17000, training accuracy 0.94 (l1=0.000000)
+12544 nnz of 25088
+512 nnz of 1024
+160 nnz of 320
+step 18000, training accuracy 0.98 (l1=0.000000)
+12544 nnz of 25088
+512 nnz of 1024
+160 nnz of 320
+step 19000, training accuracy 0.92 (l1=0.000000)
+12544 nnz of 25088
+512 nnz of 1024
+160 nnz of 320
+step 20000, training accuracy 0.92 (l1=0.000000)
+12544 nnz of 25088
+512 nnz of 1024
+160 nnz of 320
+step 21000, training accuracy 0.98 (l1=0.000000)
+12544 nnz of 25088
+512 nnz of 1024
+160 nnz of 320
+step 22000, training accuracy 0.96 (l1=0.000000)
+12544 nnz of 25088
+512 nnz of 1024
+160 nnz of 320
+step 23000, training accuracy 1 (l1=0.000000)
+12544 nnz of 25088
+512 nnz of 1024
+160 nnz of 320
+step 24000, training accuracy 0.96 (l1=0.000000)
+12544 nnz of 25088
+512 nnz of 1024
+160 nnz of 320
+step 25000, training accuracy 0.94 (l1=0.000000)
+12544 nnz of 25088
+512 nnz of 1024
+160 nnz of 320
+step 26000, training accuracy 0.98 (l1=0.000000)
+12544 nnz of 25088
+512 nnz of 1024
+160 nnz of 320
+step 27000, training accuracy 0.96 (l1=0.000000)
+12544 nnz of 25088
+512 nnz of 1024
+160 nnz of 320
+step 28000, training accuracy 0.96 (l1=0.000000)
+12544 nnz of 25088
+512 nnz of 1024
+160 nnz of 320
+step 29000, training accuracy 0.96 (l1=0.000000)
+12544 nnz of 25088
+512 nnz of 1024
+160 nnz of 320
+step 30000, training accuracy 0.94 (l1=0.000000)
+12544 nnz of 25088
+512 nnz of 1024
+160 nnz of 320
+step 31000, training accuracy 0.96 (l1=0.000000)
+12544 nnz of 25088
+512 nnz of 1024
+160 nnz of 320
+step 32000, training accuracy 0.98 (l1=0.000000)
+12544 nnz of 25088
+512 nnz of 1024
+160 nnz of 320
+step 33000, training accuracy 0.9 (l1=0.000000)
+12544 nnz of 25088
+512 nnz of 1024
+160 nnz of 320
+step 34000, training accuracy 0.94 (l1=0.000000)
+12544 nnz of 25088
+512 nnz of 1024
+160 nnz of 320
+step 35000, training accuracy 0.9 (l1=0.000000)
+12544 nnz of 25088
+512 nnz of 1024
+160 nnz of 320
+step 36000, training accuracy 0.96 (l1=0.000000)
+12544 nnz of 25088
+512 nnz of 1024
+160 nnz of 320
+step 37000, training accuracy 0.96 (l1=0.000000)
+12544 nnz of 25088
+512 nnz of 1024
+160 nnz of 320
+step 38000, training accuracy 0.94 (l1=0.000000)
+12544 nnz of 25088
+512 nnz of 1024
+160 nnz of 320
+step 39000, training accuracy 0.96 (l1=0.000000)
+12544 nnz of 25088
+512 nnz of 1024
+160 nnz of 320
+step 40000, training accuracy 0.94 (l1=0.000000)
+12544 nnz of 25088
+512 nnz of 1024
+160 nnz of 320
+step 41000, training accuracy 0.96 (l1=0.000000)
+12544 nnz of 25088
+512 nnz of 1024
+160 nnz of 320
+step 42000, training accuracy 0.94 (l1=0.000000)
+12544 nnz of 25088
+512 nnz of 1024
+160 nnz of 320
+step 43000, training accuracy 0.98 (l1=0.000000)
+12544 nnz of 25088
+512 nnz of 1024
+160 nnz of 320
+step 44000, training accuracy 0.94 (l1=0.000000)
+12544 nnz of 25088
+512 nnz of 1024
+160 nnz of 320
+step 45000, training accuracy 0.98 (l1=0.000000)
+12544 nnz of 25088
+512 nnz of 1024
+160 nnz of 320
+step 46000, training accuracy 0.96 (l1=0.000000)
+12544 nnz of 25088
+512 nnz of 1024
+160 nnz of 320
+step 47000, training accuracy 0.94 (l1=0.000000)
+12544 nnz of 25088
+512 nnz of 1024
+160 nnz of 320
+step 48000, training accuracy 0.94 (l1=0.000000)
+12544 nnz of 25088
+512 nnz of 1024
+160 nnz of 320
+step 49000, training accuracy 0.96 (l1=0.000000)
+12544 nnz of 25088
+512 nnz of 1024
+160 nnz of 320
+step 50000, training accuracy 0.98 (l1=0.000000)
+12544 nnz of 25088
+512 nnz of 1024
+160 nnz of 320
+step 51000, training accuracy 0.94 (l1=0.000000)
+12544 nnz of 25088
+512 nnz of 1024
+160 nnz of 320
+step 52000, training accuracy 0.94 (l1=0.000000)
+12544 nnz of 25088
+512 nnz of 1024
+160 nnz of 320
+step 53000, training accuracy 0.98 (l1=0.000000)
+12544 nnz of 25088
+512 nnz of 1024
+160 nnz of 320
+step 54000, training accuracy 0.98 (l1=0.000000)
+12544 nnz of 25088
+512 nnz of 1024
+160 nnz of 320
+step 55000, training accuracy 0.96 (l1=0.000000)
+12544 nnz of 25088
+512 nnz of 1024
+160 nnz of 320
+step 56000, training accuracy 0.92 (l1=0.000000)
+12544 nnz of 25088
+512 nnz of 1024
+160 nnz of 320
+step 57000, training accuracy 0.92 (l1=0.000000)
+12544 nnz of 25088
+512 nnz of 1024
+160 nnz of 320
+step 58000, training accuracy 0.98 (l1=0.000000)
+12544 nnz of 25088
+512 nnz of 1024
+160 nnz of 320
+step 59000, training accuracy 0.94 (l1=0.000000)
+12544 nnz of 25088
+512 nnz of 1024
+160 nnz of 320
+step 60000, training accuracy 0.96 (l1=0.000000)
+12544 nnz of 25088
+512 nnz of 1024
+160 nnz of 320
+test accuracy 0.9591
+saving checkpoint: chkps/mnist_model
+written graph to: mnist_model/deep_mlp.pb
+the output nodes: ['y_pred']
+{'h1': 32, 'h2': 32, 'sparsity': 50.0, 'accuracy': 0.9591}

@@ -5,6 +5,7 @@
 """
 from __future__ import print_function
 import sys
+import json
 import numpy as np
 import os
 import pickle
@@ -49,7 +50,7 @@ def deepnn(x):
 
   print("Using layer sizes: %d %d" % (fc1_size, fc2_size))
 
-  W_fc1 = weight_variable([784, tgt_fc1_size], name='W_fc1')
+  W_fc1 = weight_variable([784//4, tgt_fc1_size], name='W_fc1')
   b_fc1 = bias_variable([tgt_fc1_size], name='b_fc1')
   a_fc1 = tf.add(tf.matmul(x, W_fc1), b_fc1, name="activations_1")
   h_fc1 = tf.nn.relu(a_fc1)
@@ -77,13 +78,18 @@ def deepnn(x):
 
 l1_scale = tf.placeholder(tf.float32)
 
+def scale_image_smaller(x, factor=.5):
+  interval = int(1/factor/factor)
+  x_smaller = x[:,0:x.shape[1]:interval]
+  return x_smaller
+
 def main(_):
   # Import data
   mnist = input_data.read_data_sets(FLAGS.data_dir, one_hot=True)
 
   # Specify inputs, outputs, and a cost function
   # placeholders
-  x = tf.placeholder(tf.float32, [None, 784], name="x")
+  x = tf.placeholder(tf.float32, [None, 784//4], name="x")
   y_ = tf.placeholder(tf.float32, [None, 10], name="y")
 
   # Build the graph for the deep net
@@ -115,7 +121,7 @@ def main(_):
     # SGD
     for i in range(1, FLAGS.num_iter + 1):
       batch_images, batch_labels = mnist.train.next_batch(FLAGS.batch_size)
-      feed_dict = {x: batch_images, y_: batch_labels, l1_scale:l1_scale_scalar}
+      feed_dict = {x: scale_image_smaller(batch_images), y_: batch_labels, l1_scale:l1_scale_scalar}
       train_step.run(feed_dict=feed_dict)
       if i % FLAGS.log_iter == 0:        
         W_1, b_1, W_2, b_2, W_3, b_3 = sess.run([W_fc1, b_fc1,
@@ -138,7 +144,9 @@ def main(_):
         print("%d nnz of %d" % (np.count_nonzero(W_3), np.prod(W_3.shape)))
 
 
-    print('test accuracy %g' % accuracy.eval(feed_dict={x: mnist.test.images,
+    acc = accuracy.eval(feed_dict={x: scale_image_smaller(mnist.test.images),
+                                   y_: mnist.test.labels})
+    print('test accuracy %g' % accuracy.eval(feed_dict={x: scale_image_smaller(mnist.test.images),
                                                         y_: mnist.test.labels}))
     # Saving checkpoint and serialize the graph
     ckpt_path = saver.save(sess, FLAGS.chkp)
@@ -180,6 +188,15 @@ def main(_):
     with open("weights", "wb") as f:
       pickle.dump(d, f)
 
+    # Channelled data
+    d = {
+      "h1" : fc1_size,
+      "h2" : fc2_size,
+      "sparsity" : sparsity,
+      "accuracy" : acc,
+      }
+    print(d)
+
 if __name__ == '__main__':
   parser = argparse.ArgumentParser()
   parser.add_argument('--data_dir', type=str,
@@ -189,7 +206,7 @@ if __name__ == '__main__':
                       help='session check point (default: %(default)s)')
   parser.add_argument('-n', '--num-iteration', type=int,
                       dest='num_iter',
-                      default=50000,
+                      default=20000,
                       help='number of iterations (default: %(default)s)')
   parser.add_argument('--batch-size', dest='batch_size',
                       default=50, type=int,

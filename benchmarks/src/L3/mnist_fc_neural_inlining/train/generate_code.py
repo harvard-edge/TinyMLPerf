@@ -19,7 +19,8 @@ def generate_inlined(d):
     OUTPUT_SHAPE = 10
 
     string = """
-        float o1[{{HIDDEN1}}], o2[{{HIDDEN2}}];
+        float *o1 = (float *)malloc(sizeof(float) * {{HIDDEN1}}*10);
+        float *o2 = (float *)malloc(sizeof(float) * {{HIDDEN2}}*10);
         memset(o1, 0, sizeof(float)*{{HIDDEN1}});
         memset(o2, 0, sizeof(float)*{{HIDDEN2}});
     """
@@ -29,10 +30,12 @@ def generate_inlined(d):
     for i in range(HIDDEN1):
         sum_string = ""
         for j in range(INPUT_SHAPE):
-            if j != 0:
-                sum_string += " + "
-            sum_string += "(%f) * (in[%d]) " % (W_1_flattened[i*INPUT_SHAPE+j], j)
-        string += "o1[%d] += %s;\n" % (i, sum_string)
+            if W_1_flattened[i*INPUT_SHAPE+j] != 0:
+                if j  != 0:
+                    sum_string += " + "
+                sum_string += "(%f) * (in[%d]) " % (W_1_flattened[i*INPUT_SHAPE+j], j)
+        if sum_string != "":
+            string += "o1[%d] += %s;\n" % (i, sum_string)
 
     for i in range(HIDDEN1):
         string += "o1[%d] += %d;\n" % (i, b_1_flattened[i])
@@ -41,10 +44,12 @@ def generate_inlined(d):
     for i in range(HIDDEN2):
         sum_string = ""
         for j in range(HIDDEN1):
-            if j != 0:
-                sum_string += " + "
-            sum_string += "(%f) * (o1[%d]) " % (W_2_flattened[i*HIDDEN1+j], j)
-        string += "o2[%d] += %s;\n" % (i, sum_string)
+            if W_2_flattened[i*HIDDEN1+j] != 0:
+                if j != 0:
+                    sum_string += " + "
+                sum_string += "(%f) * (o1[%d]) " % (W_2_flattened[i*HIDDEN1+j], j)
+        if sum_string != "":
+            string += "o2[%d] += %s;\n" % (i, sum_string)
 
     for i in range(HIDDEN2):
         string += "o2[%d] += %d;\n" % (i, b_2_flattened[i])
@@ -53,16 +58,21 @@ def generate_inlined(d):
     for i in range(OUTPUT_SHAPE):
         sum_string = ""
         for j in range(HIDDEN2):
-            if j != 0:
-                sum_string += " + "
-            sum_string += "(%f) * (o2[%d]) " % (W_3_flattened[i*HIDDEN2+j], j)
-        string += "out[%d] += %s;\n" % (i, sum_string)
+            if W_3_flattened[i*HIDDEN2+j] != 0:
+                if j != 0:
+                    sum_string += " + "
+                sum_string += "(%f) * (o2[%d]) " % (W_3_flattened[i*HIDDEN2+j], j)
+        if sum_string != "":
+            string += "out[%d] += %s;\n" % (i, sum_string)
 
     for i in range(OUTPUT_SHAPE):
         string += "out[%d] += %d;\n" % (i, b_3_flattened[i])
 
     return """
-        void inference_inlined(float *in, float *out) {
+        #include <stdio.h>
+        #include <stdlib.h>
+        #include <string.h>
+        inline void inference_inlined(float *in, float *out) {
             %s
         }
     """ % string
@@ -77,24 +87,27 @@ def generate_baseline(d):
     b_1_flattened = d["b_1"].flatten()
     b_2_flattened = d["b_2"].flatten()
     b_3_flattened = d["b_3"].flatten()
-    W_1_string = "float W_1[] = {%s}" % ",".join([str(x) for x in W_1_flattened]) + ";"
-    W_2_string = "float W_2[] = {%s}" % ",".join([str(x) for x in W_2_flattened]) + ";"
-    W_3_string = "float W_3[] = {%s}" % ",".join([str(x) for x in W_3_flattened]) + ";"
-    b_1_string = "float b_1[] = {%s}" % ",".join([str(x) for x in b_1_flattened]) + ";"
-    b_2_string = "float b_2[] = {%s}" % ",".join([str(x) for x in b_2_flattened]) + ";"
-    b_3_string = "float b_3[] = {%s}" % ",".join([str(x) for x in b_3_flattened]) + ";"
+    W_1_string = "const float W_1[%d] = {%s}" % (W_1_flattened.shape[0], ",".join([str(x) for x in W_1_flattened])) + ";"
+    W_2_string = "const float W_2[%d] = {%s}" % (W_2_flattened.shape[0],",".join([str(x) for x in W_2_flattened])) + ";"
+    W_3_string = "const float W_3[%d] = {%s}" % (W_3_flattened.shape[0],",".join([str(x) for x in W_3_flattened])) + ";"
+    b_1_string = "const float b_1[%d] = {%s}" % (b_1_flattened.shape[0],",".join([str(x) for x in b_1_flattened])) + ";"
+    b_2_string = "const float b_2[%d] = {%s}" % (b_2_flattened.shape[0],",".join([str(x) for x in b_2_flattened])) + ";"
+    b_3_string = "const float b_3[%d] = {%s}" % (b_3_flattened.shape[0],",".join([str(x) for x in b_3_flattened])) + ";"
     
     string = """
+        %s
+        %s
+        %s
+        %s
+        %s
+        %s
+    #include <stdio.h>
+    #include <stdlib.h>
+    #include <string.h>
     void inference_baseline(float *in, float *out) {
-        %s
-        %s
-        %s
-        %s
-        %s
-        %s
         float o1[{{HIDDEN1}}], o2[{{HIDDEN2}}];
-        memset(o1, 0, sizeof(float)*{{HIDDEN1}});
-        memset(o2, 0, sizeof(float)*{{HIDDEN2}});
+        //memset(o1, 0, sizeof(float)*{{HIDDEN1}});
+        //memset(o2, 0, sizeof(float)*{{HIDDEN2}});
         for (int i = 0; i < {{HIDDEN1}}; i++) {
             for (int j = 0; j < {{INPUT_SHAPE}}; j++) {
                 o1[i] += W_1[i*{{INPUT_SHAPE}}+j] * in[j];

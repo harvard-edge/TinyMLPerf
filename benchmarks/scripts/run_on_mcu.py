@@ -101,9 +101,8 @@ def run_on_mcu(model_path):
         retval = json.loads(lines_stacked.splitlines()[-1])
 
         # Run power management
-        power_metrics = gather_power_metrics()
-
-        retval.update(power_metrics)
+        #power_metrics = gather_power_metrics()
+        #retval.update(power_metrics)
         
         return retval
 

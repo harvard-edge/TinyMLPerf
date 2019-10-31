@@ -14,9 +14,9 @@ mbed compile \
 # Grep the device for ST_PLACEHOLDER. ONLY WORKS FOR NUCLEO
 device=`mbed detect 2>&1  | egrep -o "NODE_[A-Za-z0-9]*" | sed 's/NODE_/NUCLEO_/g'`
 
-echo "Using a compilation profile"
+echo "Using a compilation profile: ${gitpath}/benchmarks/misc/mbed_include_files/release.json"
 mbed compile \
 -m ${device} \
 -t GCC_ARM \
--DMBED_ALL_STATS_ENABLED=1
-# --profile ../artifacts/release.json
+-DMBED_ALL_STATS_ENABLED=1 \
+--profile ${gitpath}/benchmarks/misc/mbed_include_files/release.json
