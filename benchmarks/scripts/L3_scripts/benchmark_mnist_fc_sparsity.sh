@@ -16,10 +16,9 @@ mbed new .
 cp ../artifacts/release.json .
 popd
 
-sp=( 1 10 50 80 90 95 98 )
+sp=( 0 50 80 90 95 98 )
 
-# Generate directories for 10, 100, 1000, 10000, 100000 byte read/write
-python3 benchmarks/src/generate.py --tier L3 --task MnistFCSparsity --output-path ${generate_dir} --sparsity "[1,10,50,80,90,95,98]"
+python3 benchmarks/src/generate.py --tier L3 --task MnistFCSparsity --output-path ${generate_dir} --sparsity "[0,50,80,90,95,98]"
 
 for i in "${sp[@]}"; do
     # Compile and run
